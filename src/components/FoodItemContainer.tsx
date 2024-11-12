@@ -23,11 +23,9 @@ export const FoodItemContainer: React.FC<FoodItemContainerProps> = ({ itemName, 
             const rect = dropArea.getBoundingClientRect();
             const boxRect = boxRef.current.getBoundingClientRect();
 
-            // Offset to position the box at the drop location's center
             const x = e.clientX - boxRect.width / 2;
             const y = e.clientY - boxRect.height / 2;
 
-            // Pass the item ID and adjusted coordinates to the drop handler
             onDropInRaceContainer(itemName, x, y);
         }
     };
