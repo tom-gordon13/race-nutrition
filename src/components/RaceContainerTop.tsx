@@ -1,18 +1,19 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { AllocatedFoodItem } from './AllocatedFoodItem'
 
-interface DroppedItem {
+interface AllocatedItem {
     id: string;
     x: number;
     y: number;
 }
 
 interface RaceContainerTopProps {
-    droppedItems: DroppedItem[];
+    allocatedItems: AllocatedItem[];
 }
 
 
-export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ droppedItems }) => {
+export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems }) => {
     return (
         <Box
             id="race-container"
@@ -28,20 +29,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ droppedItems
             }}
         >
             <h3>Race Container</h3>
-            {droppedItems.map((item, index) => (
-                <Box
-                    key={index}
-                    sx={{
-                        position: 'absolute',
-                        top: item.y,
-                        left: item.x,
-                        padding: '0.5rem',
-                        backgroundColor: 'lightgreen',
-                        border: '1px solid black'
-                    }}
-                >
-                    {item.id}
-                </Box>
+            {allocatedItems.map((item, index) => (
+                <AllocatedFoodItem foodItem={item} />
             ))}
         </Box>
     );

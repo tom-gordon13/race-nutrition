@@ -17,9 +17,7 @@ export const FoodItemContainer: React.FC<FoodItemContainerProps> = ({ itemName, 
     const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
         const dropArea = document.elementFromPoint(e.clientX, e.clientY);
 
-        console.log(dropArea, boxRef)
         if (dropArea && dropArea.id === 'race-container' && boxRef.current) {
-            console.log('herehere')
             const rect = dropArea.getBoundingClientRect();
             const boxRect = boxRef.current.getBoundingClientRect();
 

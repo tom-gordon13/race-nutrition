@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
+import { Box } from '@mui/material';
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
-import { Box } from '@mui/material';
+import { AllocatedItem } from '../interfaces/AllocatedItem'
 
-interface DroppedItem {
-    id: string;
-    x: number;
-    y: number;
-}
 
 export const Home = () => {
-    const [droppedItems, setDroppedItems] = useState<DroppedItem[]>([]);
+    const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
 
     const handleDropInRaceContainer = (itemId: string, x: number, y: number) => {
-        setDroppedItems((prev) => [...prev, { id: itemId, x, y }]);
+        setAllocatedItems((prev) => [...prev, { id: itemId, x, y }]);
     };
 
 
@@ -23,7 +19,7 @@ export const Home = () => {
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
                 <StagingContainer onDropInRaceContainer={handleDropInRaceContainer} />
-                <RaceContainerTop droppedItems={droppedItems} />
+                <RaceContainerTop allocatedItems={allocatedItems} />
             </Box>
         </>
     );
