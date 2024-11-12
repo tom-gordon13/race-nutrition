@@ -17,6 +17,11 @@ const conatinerDimensions = {
 
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
+    let rightEdge = 0
+    if (containerRef.current) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        rightEdge = containerRect.width - containerRect.left;
+    }
 
     const lineCount = raceDuration - 1;
 
@@ -50,7 +55,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
         />
       ))}
             {allocatedItems.map((item) => (
-                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} />
+                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge}/>
             ))}
 
         </Box>

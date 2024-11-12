@@ -6,9 +6,20 @@ import { AllocatedItem } from '../interfaces/AllocatedItem';
 interface FoodItemContainerProps {
     foodItem: AllocatedItem,
     removeItem: (itemId: string) => void;
+    rightEdge: number
 }
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, removeItem }) => {
+const margin = 5
+const stepSize = 3 
+
+const remToPx = (rem: string) => parseFloat(rem) * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+const containerDimensions = {
+    height: '5rem',
+    width: '8rem',
+}
+
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, removeItem, rightEdge }) => {
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const [position, setPosition] = useState({ x: foodItem.x, y: foodItem.y });
 
@@ -19,8 +30,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (!isInEditMode) return
 
-        if (e.key === 'ArrowRight') setPosition((prev) => ({ ...prev, x: prev.x + 3 }));
-        if (e.key === 'ArrowLeft') setPosition((prev) => ({ ...prev, x: prev.x - 3 }));
+        console.log(rightEdge)
+        if (e.key === 'ArrowRight') setPosition((prev) => ({ ...prev, x: Math.min(rightEdge - remToPx(containerDimensions.width), prev.x + stepSize )}));
+        if (e.key === 'ArrowLeft') setPosition((prev) => ({ ...prev, x: Math.max(margin, prev.x - stepSize) }));
     }
 
     useEffect(() => {
@@ -41,6 +53,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
                 position: 'absolute',
                 top: position.y,
                 left: position.x,
+                height: containerDimensions.height,
+                width: containerDimensions.width,
                 padding: '0.5rem',
                 backgroundColor: isInEditMode ? 'red' : 'lightgreen',
                 border: '1px solid black'
