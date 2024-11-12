@@ -5,6 +5,7 @@ import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
 import { AllocatedItem } from '../interfaces/AllocatedItem'
 
+const raceDurationSample = 8
 
 export const Home = () => {
     const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
@@ -23,7 +24,7 @@ export const Home = () => {
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
                 <StagingContainer onDropInRaceContainer={handleDropInRaceContainer} />
-                <RaceContainerTop allocatedItems={allocatedItems} removeAllocatedItem={removeAllocatedItem} />
+                <RaceContainerTop allocatedItems={allocatedItems} removeAllocatedItem={removeAllocatedItem} raceDuration={raceDurationSample} />
             </Box>
         </>
     );

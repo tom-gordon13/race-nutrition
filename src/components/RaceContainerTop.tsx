@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 
@@ -7,16 +7,27 @@ import { AllocatedItem } from '../interfaces/AllocatedItem';
 interface RaceContainerTopProps {
     allocatedItems: AllocatedItem[];
     removeAllocatedItem: (itemId: string) => void;
+    raceDuration: number
 }
 
 
-export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem }) => {
+export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [lineSpacing, setLineSpacing] = useState(0);
 
+    useEffect(() => {
+        if (containerRef.current) {
+            const containerWidth = containerRef.current.offsetWidth;
+            setLineSpacing(containerWidth / raceDuration);
+        }
+    }, [raceDuration]);
 
+    const lineCount = raceDuration - 1;
 
     return (
         <Box
             id="race-container"
+            ref={containerRef}
             sx={{
                 padding: '1rem',
                 border: '1px solid green',
@@ -28,10 +39,10 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
                 alignItems: 'center',
             }}
         >
-            <h3>Race Container</h3>
-            {allocatedItems.map((item, index) => (
+            {allocatedItems.map((item) => (
                 <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} />
             ))}
+
         </Box>
     );
 };
