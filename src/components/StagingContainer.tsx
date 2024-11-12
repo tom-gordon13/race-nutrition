@@ -8,8 +8,14 @@ const itemNameList = [
     'Energy Bar'
 ]
 
+interface StagingContainerProps {
+    onDropInRaceContainer: (itemId: string, x: number, y: number) => void;
+}
 
-export const StagingContainer = () => {
+
+
+export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRaceContainer }) => {
+
     return (
         <Box sx={{
             height: '15rem',
@@ -22,9 +28,14 @@ export const StagingContainer = () => {
             flexDirection: 'row'
         }}>
             Staging Container
-            <FoodItemContainer itemName={itemNameList[0]} />
-            <FoodItemContainer itemName={itemNameList[1]} />
-            <FoodItemContainer itemName={itemNameList[2]} />
+            {itemNameList.map((itemName) => (
+                <FoodItemContainer
+                    key={itemName}
+                    itemName={itemName}
+                    onDropInRaceContainer={onDropInRaceContainer}
+                />
+            ))}
+
         </Box>
     );
 }
