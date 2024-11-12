@@ -16,13 +16,17 @@ export const FoodItemContainer: React.FC<FoodItemContainerProps> = ({ itemName, 
 
     const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
         const dropArea = document.elementFromPoint(e.clientX, e.clientY);
-    
+        const margin = 5;
+        
         if (dropArea && dropArea.id === 'race-container' && boxRef.current) {
             const raceContainerRect = dropArea.getBoundingClientRect();
             const boxRect = boxRef.current.getBoundingClientRect();
     
-            const x = e.clientX - raceContainerRect.left - boxRect.width / 2;
-            const y = e.clientY - raceContainerRect.top - boxRect.height / 2;
+            let x = e.clientX - raceContainerRect.left - boxRect.width / 2;
+            let y = e.clientY - raceContainerRect.top - boxRect.height / 2;
+
+            x = Math.max(margin, Math.min(x, raceContainerRect.width - boxRect.width - margin));
+            y = Math.max(margin, Math.min(y, raceContainerRect.height - boxRect.height - margin));
     
             onDropInRaceContainer(itemName, x, y);
         }

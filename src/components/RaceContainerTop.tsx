@@ -17,14 +17,6 @@ const conatinerDimensions = {
 
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const [lineSpacing, setLineSpacing] = useState(0);
-
-    useEffect(() => {
-        if (containerRef.current) {
-            const containerWidth = containerRef.current.offsetWidth;
-            setLineSpacing(containerWidth / raceDuration);
-        }
-    }, [raceDuration]);
 
     const lineCount = raceDuration - 1;
 
