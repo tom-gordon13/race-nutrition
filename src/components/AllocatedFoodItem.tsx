@@ -1,18 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 
 
 interface FoodItemContainerProps {
-    foodItem: AllocatedItem
+    foodItem: AllocatedItem,
+    removeItem: (itemId: string) => void;
 }
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }) => {
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, removeItem }) => {
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const [position, setPosition] = useState({ x: foodItem.x, y: foodItem.y });
 
     const handleClick = () => {
-        setIsInEditMode(true)
+        setIsInEditMode(!isInEditMode)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -41,12 +42,20 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }
                 top: position.y,
                 left: position.x,
                 padding: '0.5rem',
-                backgroundColor: 'lightgreen',
+                backgroundColor: isInEditMode ? 'red' : 'lightgreen',
                 border: '1px solid black'
             }}
             onClick={handleClick}
         >
             {foodItem.id} - {position.x}, {position.y}
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => removeItem(foodItem.id)}
+                sx={{ marginTop: '0.5rem' }}
+            >
+                Remove
+            </Button>
         </Box>
     );
 }

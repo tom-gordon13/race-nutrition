@@ -1,19 +1,19 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
+import { AllocatedItem } from '../interfaces/AllocatedItem';
 
-interface AllocatedItem {
-    id: string;
-    x: number;
-    y: number;
-}
 
 interface RaceContainerTopProps {
     allocatedItems: AllocatedItem[];
+    removeAllocatedItem: (itemId: string) => void;
 }
 
 
-export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems }) => {
+export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem }) => {
+
+
+
     return (
         <Box
             id="race-container"
@@ -30,7 +30,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
         >
             <h3>Race Container</h3>
             {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem foodItem={item} />
+                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} />
             ))}
         </Box>
     );
