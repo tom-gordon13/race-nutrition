@@ -10,6 +10,10 @@ interface RaceContainerTopProps {
     raceDuration: number
 }
 
+const conatinerDimensions = {
+    width: '100rem',    
+    height: '25rem'
+}
 
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -29,16 +33,30 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
             id="race-container"
             ref={containerRef}
             sx={{
+                position: 'relative',
                 padding: '1rem',
                 border: '1px solid green',
-                width: '90%',
-                height: '25rem',
+                width: conatinerDimensions.width,
+                height: conatinerDimensions.height,
                 marginTop: '1rem',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
         >
+            {[...Array(lineCount)].map((_, index) => (
+        <Box
+          key={index}
+          sx={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: `${(index * 100) / (lineCount-1)}%`,
+            width: '1px', 
+            backgroundColor: 'black',
+          }}
+        />
+      ))}
             {allocatedItems.map((item) => (
                 <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} />
             ))}
