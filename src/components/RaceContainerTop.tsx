@@ -62,8 +62,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAlloca
                     }}
                 />
             ))}
-            {allocatedItems.map((item) => (
-                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
+            {allocatedItems.map((item, index) => (
+                <AllocatedFoodItem key={`${item.id}_${index}`} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
             ))}
 
         </Box>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
+import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 
 interface FoodItemContainerProps {
@@ -25,6 +26,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
     const [originalPosition, setOriginalPosition] = useState({ x: foodItem.x, y: foodItem.y });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+    const { allocatedItems } = useAllocatedItems();
 
     const handleClick = () => {
         setIsInEditMode(!isInEditMode);
@@ -45,20 +47,28 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
             const newX = Math.max(margin, e.clientX - dragOffset.x);
             const newY = e.clientY - dragOffset.y
             // const newY = Math.max(containerTop, e.clientY);
-            console.log('client', e.clientX, e.clientY)
-            console.log('new', newX, newY)
             setPosition({ x: newX, y: newY });
         }
     };
 
     const handleMouseUp = () => {
         setIsDragging(false);
-        console.log('dragging done')
-        console.log(containerTop, containerBottom)
-        console.log(position)
-        // Check if the item is within the bounds of RaceContainerTop
-        // if (position.y < containerTop || position.y > containerBottom) {
-        if (position.y < 0 || position.y > containerBottom) {
+
+        const overlappingItem = allocatedItems.find(
+            (item) =>
+                // item.key !== foodItem.key &&
+                Math.abs(item.x - position.x) < parseInt(containerDimensions.width, 10) &&
+                Math.abs(item.y - position.y) < parseInt(containerDimensions.height, 10)
+        );
+
+        if (overlappingItem) {
+            // If overlapping, adjust Y position to be below the overlapping item by at least 5px
+            setPosition((prevPosition) => ({
+                x: prevPosition.x,
+                y: overlappingItem.y + parseInt(containerDimensions.height, 10) + margin,
+            }));
+        }
+        else if (position.y < 0 || position.y > containerBottom) {
             // Revert to the original position if dropped outside
             setPosition(originalPosition);
         }
