@@ -11,17 +11,24 @@ interface RaceContainerTopProps {
 }
 
 const conatinerDimensions = {
-    width: '1400px',
+    width: '90rem',
     height: '25rem'
 }
 
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    let rightEdge = 0
-    if (containerRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        rightEdge = containerRect.width;
-    }
+    const [containerTop, setContainerTop] = useState(0);
+    const [containerBottom, setContainerBottom] = useState(0);
+    const [rightEdge, setRightEdge] = useState(0);
+
+    useEffect(() => {
+        if (containerRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            setContainerTop(containerRect.top);
+            setContainerBottom(containerRect.bottom);
+            setRightEdge(containerRect.width);
+        }
+    }, []);
 
     const lineCount = raceDuration - 1;
 
@@ -55,7 +62,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
                 />
             ))}
             {allocatedItems.map((item) => (
-                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} />
+                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
             ))}
 
         </Box>

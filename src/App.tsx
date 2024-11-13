@@ -7,7 +7,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <Router>  
+      <Router>
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>

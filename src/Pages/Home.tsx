@@ -1,4 +1,4 @@
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
