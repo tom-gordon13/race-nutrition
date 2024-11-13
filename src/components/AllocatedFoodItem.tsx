@@ -34,7 +34,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
         setOriginalPosition(position);
         setIsDragging(true);
 
-        // Calculate initial offset between mouse and item position
         setDragOffset({
             x: e.clientX - position.x,
             y: e.clientY - position.y,
@@ -123,7 +122,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
                 cursor: isDragging ? 'grabbing' : 'grab',
             }}
             onMouseDown={handleMouseDown}
-            onClick={handleClick}
+            onDoubleClick={handleClick}
         >
             {foodItem.id} - {position.x}, {position.y}
             <Button
