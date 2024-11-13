@@ -11,7 +11,7 @@ interface RaceContainerTopProps {
 }
 
 const conatinerDimensions = {
-    width: '100rem',    
+    width: '1400px',
     height: '25rem'
 }
 
@@ -20,7 +20,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
     let rightEdge = 0
     if (containerRef.current) {
         const containerRect = containerRef.current.getBoundingClientRect();
-        rightEdge = containerRect.width - containerRect.left;
+        rightEdge = containerRect.width;
     }
 
     const lineCount = raceDuration - 1;
@@ -42,20 +42,20 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedIte
             }}
         >
             {[...Array(lineCount)].map((_, index) => (
-        <Box
-          key={index}
-          sx={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: `${(index * 100) / (lineCount-1)}%`,
-            width: '1px', 
-            backgroundColor: 'black',
-          }}
-        />
-      ))}
+                <Box
+                    key={index}
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: `${(index * 100) / (lineCount - 1)}%`,
+                        width: '1px',
+                        backgroundColor: 'black',
+                    }}
+                />
+            ))}
             {allocatedItems.map((item) => (
-                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge}/>
+                <AllocatedFoodItem foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} />
             ))}
 
         </Box>

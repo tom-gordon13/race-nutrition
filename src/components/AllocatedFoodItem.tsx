@@ -10,13 +10,13 @@ interface FoodItemContainerProps {
 }
 
 const margin = 5
-const stepSize = 3 
+const stepSize = 3
 
 const remToPx = (rem: string) => parseFloat(rem) * parseFloat(getComputedStyle(document.documentElement).fontSize);
 
 const containerDimensions = {
-    height: '5rem',
-    width: '8rem',
+    height: '80px',
+    width: '120px',
 }
 
 export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, removeItem, rightEdge }) => {
@@ -30,8 +30,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (!isInEditMode) return
 
-        console.log(rightEdge)
-        if (e.key === 'ArrowRight') setPosition((prev) => ({ ...prev, x: Math.min(rightEdge - remToPx(containerDimensions.width), prev.x + stepSize )}));
+        if (e.key === 'ArrowRight') setPosition((prev) => ({ ...prev, x: Math.min(rightEdge - parseInt(containerDimensions.width, 10) - margin, prev.x + stepSize) }));
         if (e.key === 'ArrowLeft') setPosition((prev) => ({ ...prev, x: Math.max(margin, prev.x - stepSize) }));
     }
 
