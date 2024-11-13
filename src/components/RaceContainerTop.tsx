@@ -2,10 +2,10 @@ import { Box } from '@mui/material';
 import React, { useRef, useState, useEffect } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
+import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 
 interface RaceContainerTopProps {
-    allocatedItems: AllocatedItem[];
     removeAllocatedItem: (itemId: string) => void;
     raceDuration: number
 }
@@ -15,11 +15,12 @@ const conatinerDimensions = {
     height: '25rem'
 }
 
-export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ allocatedItems, removeAllocatedItem, raceDuration }) => {
+export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAllocatedItem, raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [containerTop, setContainerTop] = useState(0);
     const [containerBottom, setContainerBottom] = useState(0);
     const [rightEdge, setRightEdge] = useState(0);
+    const { allocatedItems } = useAllocatedItems();
 
     useEffect(() => {
         if (containerRef.current) {
