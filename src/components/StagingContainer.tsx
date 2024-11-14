@@ -19,7 +19,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRace
     return (
         <Box sx={{
             height: '15rem',
-            width: '80%',
+            width: '100%',
             border: '1px solid black',
             alignContent: 'center',
             marginBottom: '1rem',
@@ -27,7 +27,6 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRace
             display: 'flex',
             flexDirection: 'row'
         }}>
-            Staging Container
             {itemNameList.map((itemName) => (
                 <FoodItemContainer
                     key={itemName}

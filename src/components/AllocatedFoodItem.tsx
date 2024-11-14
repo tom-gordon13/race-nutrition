@@ -139,7 +139,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
                 variant="contained"
                 color="secondary"
                 onClick={() => removeItem(foodItem.id)}
-                sx={{ marginTop: '0.5rem' }}
+                sx={{ marginTop: '0.5rem', display: isInEditMode ? 'block' : 'none' }}
             >
                 Remove
             </Button>

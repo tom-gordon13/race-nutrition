@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
 import { AllocatedItem } from '../interfaces/AllocatedItem'
+import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 const raceDurationSample = 8
@@ -24,7 +25,15 @@ export const Home = () => {
         <>
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
-                <StagingContainer onDropInRaceContainer={handleDropInRaceContainer} />
+
+                <Grid container spacing={2} alignItems="flex-start">
+                    <Grid item xs={8}>
+                        <StagingContainer onDropInRaceContainer={handleDropInRaceContainer} />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <NutritionInfoContainer />
+                    </Grid>
+                </Grid>
                 <RaceContainerTop removeAllocatedItem={removeAllocatedItem} raceDuration={raceDurationSample} />
             </Box>
         </>
