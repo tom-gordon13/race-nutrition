@@ -44,8 +44,11 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (isDragging) {
+            console.log(containerBottom)
             const newX = Math.max(margin, e.clientX - dragOffset.x);
-            const newY = e.clientY - dragOffset.y
+            const newY = Math.max(margin, Math.min(e.clientY - dragOffset.y, containerBottom - parseInt(containerDimensions.height, 10) / 2));
+
+
             // const newY = Math.max(containerTop, e.clientY);
             setPosition({ x: newX, y: newY });
         }
@@ -61,16 +64,16 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
                 Math.abs(item.y - position.y) < parseInt(containerDimensions.height, 10)
         );
 
-        if (overlappingItem) {
-            // If overlapping, adjust Y position to be below the overlapping item by at least 5px
+        if (position.y < 0 || position.y > containerBottom) {
+            setPosition(originalPosition);
+
+        }
+        else if (overlappingItem) {
+
             setPosition((prevPosition) => ({
                 x: prevPosition.x,
                 y: overlappingItem.y + parseInt(containerDimensions.height, 10) + margin,
             }));
-        }
-        else if (position.y < 0 || position.y > containerBottom) {
-            // Revert to the original position if dropped outside
-            setPosition(originalPosition);
         }
     };
 

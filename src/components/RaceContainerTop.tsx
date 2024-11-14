@@ -25,8 +25,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAlloca
     useEffect(() => {
         if (containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
+            console.log(containerRect)
             setContainerTop(containerRect.top);
-            setContainerBottom(containerRect.bottom);
+            setContainerBottom(containerRect.top);
             setRightEdge(containerRect.width);
         }
     }, []);
