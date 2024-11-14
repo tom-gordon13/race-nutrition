@@ -44,8 +44,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (isDragging) {
-            console.log(containerBottom)
-            const newX = Math.max(margin, e.clientX - dragOffset.x);
+            console.log(rightEdge)
+            // const newX = Math.max(margin, e.clientX - dragOffset.x);
+            const newX = Math.max(margin, Math.min(e.clientX - dragOffset.x, rightEdge - parseInt(containerDimensions.width, 10) - margin));
             const newY = Math.max(margin, Math.min(e.clientY - dragOffset.y, containerBottom - parseInt(containerDimensions.height, 10) / 2));
 
 
