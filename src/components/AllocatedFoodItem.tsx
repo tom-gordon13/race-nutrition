@@ -138,7 +138,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
             onMouseDown={handleMouseDown}
             onDoubleClick={handleClick}
         >
-            {foodItem.id} - {position.x}, {position.y}
+            {foodItem.item_name} - {position.x}, {position.y}
             <Button
                 variant="contained"
                 color="secondary"

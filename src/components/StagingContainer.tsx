@@ -2,14 +2,23 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { FoodItemContainer } from './FoodItemContainer';
 
-const itemNameList = [
-    'Gummies',
-    'Drink Mix',
-    'Energy Bar'
+const itemList = [
+    {
+        itemId: '123',
+        item_name: 'Gummies'
+    },
+    {
+        itemId: '456',
+        item_name: 'Energy Bar'
+    },
+    {
+        itemId: '789',
+        item_name: 'Gel'
+    }
 ]
 
 interface StagingContainerProps {
-    onDropInRaceContainer: (itemId: string, x: number, y: number) => void;
+    onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
 }
 
 
@@ -27,10 +36,10 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRace
             display: 'flex',
             flexDirection: 'row'
         }}>
-            {itemNameList.map((itemName) => (
+            {itemList.map((item) => (
                 <FoodItemContainer
-                    key={itemName}
-                    itemName={itemName}
+                    key={item.itemId}
+                    item={item}
                     onDropInRaceContainer={onDropInRaceContainer}
                 />
             ))}

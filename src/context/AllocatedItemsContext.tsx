@@ -4,7 +4,7 @@ import { AllocatedItem } from '../interfaces/AllocatedItem'
 interface AllocatedItemsContextProps {
     allocatedItems: AllocatedItem[];
     setAllocatedItems: Dispatch<SetStateAction<AllocatedItem[]>>;
-    handleDropInRaceContainer: (itemId: string, x: number, y: number) => void;
+    handleDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
     removeAllocatedItem: (itemId: string) => void;
 }
 
@@ -13,8 +13,8 @@ const AllocatedItemsContext = createContext<AllocatedItemsContextProps | undefin
 export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
 
-    const handleDropInRaceContainer = (itemId: string, x: number, y: number) => {
-        setAllocatedItems((prev) => [...prev, { id: itemId, x, y }]);
+    const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
+        setAllocatedItems((prev) => [...prev, { id: itemId, x, y, item_name }]);
     };
 
     const removeAllocatedItem = (itemId: string) => {
@@ -28,7 +28,6 @@ export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = (
     );
 };
 
-// Custom hook for accessing the context
 export const useAllocatedItems = (): AllocatedItemsContextProps => {
     const context = useContext(AllocatedItemsContext);
     if (!context) {

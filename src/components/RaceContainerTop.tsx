@@ -25,7 +25,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAlloca
     useEffect(() => {
         if (containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
-            console.log(containerRect)
             setContainerTop(containerRect.top);
             setContainerBottom(containerRect.top);
             setRightEdge(containerRect.width);
@@ -64,7 +63,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAlloca
                 />
             ))}
             {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem key={`${item.id}_${index}`} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
+                <AllocatedFoodItem key={item.id} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
             ))}
 
         </Box>

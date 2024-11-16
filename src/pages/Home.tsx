@@ -12,8 +12,8 @@ const raceDurationSample = 8
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-    const handleDropInRaceContainer = (itemId: string, x: number, y: number) => {
-        setAllocatedItems((prev) => [...prev, { id: itemId, x, y }]);
+    const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
+        setAllocatedItems((prev) => [...prev, { id: itemId, x, y, item_name }]);
     };
 
     const removeAllocatedItem = (itemId: string) => {
