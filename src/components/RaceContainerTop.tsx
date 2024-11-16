@@ -6,7 +6,6 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 
 interface RaceContainerTopProps {
-    removeAllocatedItem: (itemId: string) => void;
     raceDuration: number
 }
 
@@ -15,12 +14,12 @@ const conatinerDimensions = {
     height: '25rem'
 }
 
-export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAllocatedItem, raceDuration }) => {
+export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [containerTop, setContainerTop] = useState(0);
     const [containerBottom, setContainerBottom] = useState(0);
     const [rightEdge, setRightEdge] = useState(0);
-    const { allocatedItems } = useAllocatedItems();
+    const { allocatedItems, removeAllocatedItem } = useAllocatedItems();
 
     useEffect(() => {
         if (containerRef.current) {
@@ -63,7 +62,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ removeAlloca
                 />
             ))}
             {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem key={item.id} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
+                <AllocatedFoodItem key={item.instance_id} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
             ))}
 
         </Box>

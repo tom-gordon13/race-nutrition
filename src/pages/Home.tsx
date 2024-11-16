@@ -12,15 +12,6 @@ const raceDurationSample = 8
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-    const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
-        setAllocatedItems((prev) => [...prev, { id: itemId, x, y, item_name }]);
-    };
-
-    const removeAllocatedItem = (itemId: string) => {
-        setAllocatedItems((prevItems) => prevItems.filter(item => item.id !== itemId));
-    };
-
-
     return (
         <>
             <NavMain />
@@ -28,13 +19,13 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start">
                     <Grid item xs={8}>
-                        <StagingContainer onDropInRaceContainer={handleDropInRaceContainer} />
+                        <StagingContainer />
                     </Grid>
                     <Grid item xs={4}>
                         <NutritionInfoContainer />
                     </Grid>
                 </Grid>
-                <RaceContainerTop removeAllocatedItem={removeAllocatedItem} raceDuration={raceDurationSample} />
+                <RaceContainerTop raceDuration={raceDurationSample} />
             </Box>
         </>
     );

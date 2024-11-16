@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box } from '@mui/material';
 import { FoodItemContainer } from './FoodItemContainer';
+import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 const itemList = [
     {
@@ -18,12 +19,13 @@ const itemList = [
 ]
 
 interface StagingContainerProps {
-    onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
+
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRaceContainer }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
+    const { handleDropInRaceContainer } = useAllocatedItems();
 
     return (
         <Box sx={{
@@ -40,7 +42,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ onDropInRace
                 <FoodItemContainer
                     key={item.itemId}
                     item={item}
-                    onDropInRaceContainer={onDropInRaceContainer}
+                    onDropInRaceContainer={handleDropInRaceContainer}
                 />
             ))}
 

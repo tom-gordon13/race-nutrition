@@ -5,7 +5,7 @@ interface AllocatedItemsContextProps {
     allocatedItems: AllocatedItem[];
     setAllocatedItems: Dispatch<SetStateAction<AllocatedItem[]>>;
     handleDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
-    removeAllocatedItem: (itemId: string) => void;
+    removeAllocatedItem: (instance_id: number) => void;
 }
 
 const AllocatedItemsContext = createContext<AllocatedItemsContextProps | undefined>(undefined);
@@ -14,11 +14,13 @@ export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = (
     const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
 
     const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
-        setAllocatedItems((prev) => [...prev, { id: itemId, x, y, item_name }]);
+        const newInstanceId = allocatedItems.length + 1
+        setAllocatedItems((prev) => [...prev, { item_id: itemId, instance_id: newInstanceId, x, y, item_name }]);
+        console.log({ item_id: itemId, instance_id: newInstanceId, x, y, item_name })
     };
 
-    const removeAllocatedItem = (itemId: string) => {
-        setAllocatedItems((prevItems) => prevItems.filter(item => item.id !== itemId));
+    const removeAllocatedItem = (instance_id: number) => {
+        setAllocatedItems((prevItems) => prevItems.filter(item => item.instance_id !== instance_id));
     };
 
     return (

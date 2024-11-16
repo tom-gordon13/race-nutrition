@@ -6,7 +6,7 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 interface FoodItemContainerProps {
     foodItem: AllocatedItem,
-    removeItem: (itemId: string) => void;
+    removeItem: (instance_id: number) => void;
     rightEdge: number;
     containerTop: number;
     containerBottom: number;
@@ -44,13 +44,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
 
     const handleMouseMove = (e: MouseEvent) => {
         if (isDragging) {
-            console.log(rightEdge)
-            // const newX = Math.max(margin, e.clientX - dragOffset.x);
             const newX = Math.max(margin, Math.min(e.clientX - dragOffset.x, rightEdge - parseInt(containerDimensions.width, 10) - margin));
             const newY = Math.max(margin, Math.min(e.clientY - dragOffset.y, containerBottom - parseInt(containerDimensions.height, 10) / 2));
 
-
-            // const newY = Math.max(containerTop, e.clientY);
             setPosition({ x: newX, y: newY });
         }
     };
@@ -60,7 +56,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
 
         const overlappingItem = allocatedItems.find(
             (item) =>
-                // item.key !== foodItem.key &&
+                item.instance_id !== foodItem.instance_id &&
                 Math.abs(item.x - position.x) < parseInt(containerDimensions.width, 10) &&
                 Math.abs(item.y - position.y) < parseInt(containerDimensions.height, 10)
         );
@@ -142,7 +138,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
             <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => removeItem(foodItem.id)}
+                onClick={() => removeItem(foodItem.instance_id)}
                 sx={{ marginTop: '0.5rem', display: isInEditMode ? 'block' : 'none' }}
             >
                 Remove
