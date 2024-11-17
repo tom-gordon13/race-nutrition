@@ -10,7 +10,7 @@ interface FoodItemContainerProps {
 }
 
 export const FoodItemContainer: React.FC<FoodItemContainerProps> = ({ item, onDropInRaceContainer }) => {
-    const ref = useRef(null)
+    const ref = useRef<HTMLDivElement | null>(null);
     const [dragging, setDragging] = useState<boolean>(false);
 
     useEffect(() => {
@@ -19,10 +19,11 @@ export const FoodItemContainer: React.FC<FoodItemContainerProps> = ({ item, onDr
 
         return draggable({
             element: el,
+            getInitialData: () => ({ item }),
             onDragStart: () => setDragging(true),
             onDrop: () => setDragging(false),
         });
-    }, []);
+    }, [item]);
 
     return (
         <Box

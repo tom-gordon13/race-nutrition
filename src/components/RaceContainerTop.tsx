@@ -3,6 +3,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import invariant from 'tiny-invariant';
 
 
 interface RaceContainerTopProps {
@@ -14,20 +16,42 @@ const conatinerDimensions = {
     height: '25rem'
 }
 
+const isValid = true
+
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const [containerTop, setContainerTop] = useState(0);
-    const [containerBottom, setContainerBottom] = useState(0);
-    const [rightEdge, setRightEdge] = useState(0);
-    const { allocatedItems, removeAllocatedItem } = useAllocatedItems();
+    const [isDraggedOver, setIsDraggedOver] = useState(false);
 
     useEffect(() => {
-        if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
-            setContainerTop(containerRect.top);
-            setContainerBottom(containerRect.top);
-            setRightEdge(containerRect.width);
-        }
+        const el = containerRef.current;
+        invariant(el);
+
+        return dropTargetForElements({
+            element: el,
+            getData: () => ({}),
+            onDragEnter: () => {
+                if (isValid) setIsDraggedOver(true)
+            },
+            onDragLeave: () => setIsDraggedOver(false),
+            onDrop: () => setIsDraggedOver(false),
+        });
+    }, []);
+
+
+    useEffect(() => {
+        return monitorForElements({
+            onDrop({ source, location }) {
+                const destination = location.current.dropTargets[0];
+                if (!destination) {
+                    // if dropped outside of any drop targets
+                    return;
+                }
+                const destinationLocation = destination.data.location;
+                const sourceLocation = source.data.location;
+                const pieceType = source.data.pieceType;
+
+            },
+        });
     }, []);
 
     const lineCount = raceDuration - 1;
@@ -46,6 +70,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                backgroundColor: isDraggedOver ? 'skyblue' : 'white'
             }}
         >
             {[...Array(lineCount)].map((_, index) => (
@@ -60,9 +85,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                         backgroundColor: 'black',
                     }}
                 />
-            ))}
-            {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem key={item.instance_id} foodItem={item} removeItem={removeAllocatedItem} rightEdge={rightEdge} containerBottom={containerBottom} containerTop={containerTop} />
             ))}
 
         </Box>
