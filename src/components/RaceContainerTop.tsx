@@ -29,7 +29,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-
     const adjustCoordinates = (initial_x: number, initial_y: number, dropped_obj_height: number, dropped_obj_width: number) => {
         const y_offset = dropped_obj_height + (containerRef?.current?.offsetTop ?? 0)
         const x_offset = dropped_obj_width + (containerRef?.current?.offsetLeft ?? 0)
@@ -55,7 +54,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         return dropTargetForElements({
             element: containerElement,
             getData: ({ input, element, source }) => {
-
+                console.log('source', source)
                 const data = { type: "card", cardId: source.data.itemId };
 
                 // Attaches the closest edge (top or bottom) to the data object
@@ -74,18 +73,21 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             onDragLeave: () => setIsDraggedOver(false),
             onDrop: ({ source, location }) => {
-                const itemData: { itemId: string, item_name: string } = source.data.item as { itemId: string; item_name: string }
+
+                const itemData: { itemId: string, item_name: string, instance_id: number | undefined } = source.data.item as { itemId: string; item_name: string, instance_id: number | undefined }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, source.element.clientHeight as number, source.element.clientWidth as number)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
-                if (isValidDrop) setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }]);
+                const isUpdate = !!itemData.instance_id
+                console.log('here', isUpdate, source.data)
+                const newItem = { item_id: itemData.itemId, instance_id: allocatedItems.length + 1, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
+                if (isValidDrop && !isUpdate) setAllocatedItems((prev) => [...prev, newItem]);
+                if (isValidDrop && isUpdate) setAllocatedItems((prev) => [...prev.filter((item) => item.instance_id !== itemData.instance_id), newItem]);
                 setIsDraggedOver(false)
             },
         });
-    }, []);
+    }, [allocatedItems]);
 
-    useEffect(() => {
-        console.log(allocatedItems)
-    }, [allocatedItems])
+    useEffect(() => { console.log(allocatedItems) }, [allocatedItems])
 
     useEffect(() => {
         return monitorForElements({
@@ -126,7 +128,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 />
             ))}
             {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem key={item.instance_id} foodItem={item} />
+                <AllocatedFoodItem key={item.instance_id} item={item} />
             ))}
         </Box>
     );

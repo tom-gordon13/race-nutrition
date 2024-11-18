@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import invariant from 'tiny-invariant';
+import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 
 
 interface FoodItemContainerProps {
-    foodItem: AllocatedItem,
+    item: AllocatedItem,
 }
 
 const margin = 5
@@ -16,10 +20,11 @@ const containerDimensions = {
     width: '120px',
 }
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }) => {
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) => {
+    const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
-    const [position, setPosition] = useState({ x: foodItem.x, y: foodItem.y });
-    const [originalPosition, setOriginalPosition] = useState({ x: foodItem.x, y: foodItem.y });
+    const [position, setPosition] = useState({ x: item.x, y: item.y });
+    const [originalPosition, setOriginalPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const { allocatedItems } = useAllocatedItems();
@@ -28,9 +33,50 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }
         setIsInEditMode(!isInEditMode);
     };
 
+    useEffect(() => {
+        const allocatedItemElement = allocatedItemRef.current;
+        invariant(allocatedItemElement);
+
+        return combine(
+            dropTargetForElements({
+                element: allocatedItemElement,
+                getData: ({ input, element, source }) => {
+                    // To attach card data to a drop target
+                    const data = { type: "card", cardId: source.data.itemId };
+
+                    // Attaches the closest edge (top or bottom) to the data object
+                    // This data will be used to determine where to drop card relative
+                    // to the target card.
+                    return attachClosestEdge(data, {
+                        input,
+                        element,
+                        allowedEdges: ["top", "bottom"],
+                    });
+                },
+                getIsSticky: () => true, // To make a drop target "sticky"
+                onDragEnter: (args) => {
+                    // if (args.source.data.cardId !== item.itemId) {
+                    //     console.log("onDragEnter", args);
+                    // }
+                },
+            }),
+            draggable({
+                element: allocatedItemElement,
+                getInitialData: () => ({ item }),
+                onDragStart: ({ source }) => {
+                    setIsDragging(true)
+                    console.log('item', source.data)
+                },
+                onDrop: () => {
+                    setIsDragging(false)
+                },
+            }))
+    }, []);
+
 
     return (
         <Box
+            ref={allocatedItemRef}
             sx={{
                 position: 'absolute',
                 top: position.y,
@@ -44,7 +90,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }
             }}
             onDoubleClick={handleClick}
         >
-            {foodItem.item_name} - {position.x}, {position.y}
+            {item.item_name} - {position.x}, {position.y}
             <Button
                 variant="contained"
                 color="secondary"
