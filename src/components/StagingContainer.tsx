@@ -5,15 +5,15 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 const itemList = [
     {
-        itemId: '123',
+        item_id: '123',
         item_name: 'Gummies'
     },
     {
-        itemId: '456',
+        item_id: '456',
         item_name: 'Energy Bar'
     },
     {
-        itemId: '789',
+        item_id: '789',
         item_name: 'Gel'
     }
 ]
@@ -40,7 +40,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
         }}>
             {itemList.map((item) => (
                 <FoodItemCard
-                    key={item.itemId}
+                    key={item.item_id}
                     item={item}
                     onDropInRaceContainer={handleDropInRaceContainer}
                 />

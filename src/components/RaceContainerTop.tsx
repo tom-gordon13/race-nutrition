@@ -6,6 +6,7 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
+import { v4 as uuidv4 } from 'uuid';
 
 
 interface RaceContainerTopProps {
@@ -74,20 +75,26 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             onDragLeave: () => setIsDraggedOver(false),
             onDrop: ({ source, location }) => {
 
-                const itemData: { itemId: string, item_name: string, instance_id: number | undefined } = source.data.item as { itemId: string; item_name: string, instance_id: number | undefined }
+                const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, source.element.clientHeight as number, source.element.clientWidth as number)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 const isUpdate = !!itemData.instance_id
-                console.log('here', isUpdate, source.data)
-                const newItem = { item_id: itemData.itemId, instance_id: allocatedItems.length + 1, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
-                if (isValidDrop && !isUpdate) setAllocatedItems((prev) => [...prev, newItem]);
-                if (isValidDrop && isUpdate) setAllocatedItems((prev) => [...prev.filter((item) => item.instance_id !== itemData.instance_id), newItem]);
+                const newInstanceId = allocatedItems.length + 1
+                const newItem = { item_id: itemData.item_id, instance_id: isUpdate ? itemData.instance_id || 0 : newInstanceId, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
+                let newAllocatedItems: AllocatedItem[] = []
+                if (isValidDrop && !isUpdate) newAllocatedItems = [...allocatedItems, newItem];
+                if (isValidDrop && isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
+                setAllocatedItems([...newAllocatedItems])
                 setIsDraggedOver(false)
+                console.log("Are arrays the same?", allocatedItems === newAllocatedItems)
             },
         });
     }, [allocatedItems]);
 
-    useEffect(() => { console.log(allocatedItems) }, [allocatedItems])
+    useEffect(() => {
+        console.log("Allocated Items Changed:", allocatedItems);
+    }, [allocatedItems]);
+
 
     useEffect(() => {
         return monitorForElements({
@@ -127,8 +134,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                     }}
                 />
             ))}
-            {allocatedItems.map((item, index) => (
-                <AllocatedFoodItem key={item.instance_id} item={item} />
+            {allocatedItems.map((item) => (
+                <AllocatedFoodItem key={uuidv4()} item={item} />
             ))}
         </Box>
     );

@@ -7,7 +7,7 @@ import { Box } from '@mui/material';
 
 
 interface FoodItemCardProps {
-    item: { itemId: string, item_name: string }
+    item: { item_id: string, item_name: string }
     onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
 }
 
@@ -45,7 +45,7 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
                 },
                 getIsSticky: () => true, // To make a drop target "sticky"
                 onDragEnter: (args) => {
-                    if (args.source.data.cardId !== item.itemId) {
+                    if (args.source.data.cardId !== item.item_id) {
                         console.log("onDragEnter", args);
                     }
                 },

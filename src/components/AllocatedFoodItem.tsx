@@ -29,6 +29,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const { allocatedItems } = useAllocatedItems();
 
+    useEffect(() => { console.log(position) }, [position])
+
     const handleClick = () => {
         setIsInEditMode(!isInEditMode);
     };
