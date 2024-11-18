@@ -29,17 +29,24 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
+
+    const adjustCoordinates = (initial_x: number, initial_y: number, dropped_obj_height: number, dropped_obj_width: number) => {
+        const y_offset = dropped_obj_height + (containerRef?.current?.offsetTop ?? 0)
+        const x_offset = dropped_obj_width + (containerRef?.current?.offsetLeft ?? 0)
+        return { x: initial_x - x_offset, y: initial_y - y_offset }
+    }
+
     const handleDrop = useCallback(({ source, location }: DropEvent) => {
         // Logic to handle the drop event will be added here
         console.log("handleDrop", source, location);
     }, []);
 
     useEffect(() => {
-        const el = containerRef.current;
-        invariant(el);
+        const containerElement = containerRef.current;
+        invariant(containerElement);
 
         return dropTargetForElements({
-            element: el,
+            element: containerElement,
             getData: ({ input, element, source }) => {
 
                 const data = { type: "card", cardId: source.data.itemId };
@@ -60,9 +67,18 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             onDragLeave: () => setIsDraggedOver(false),
             onDrop: ({ source, location }) => {
-                console.log('here', source.data.item, location)
+                const itemRect = containerElement.getBoundingClientRect();
+                console.log('here', source)
+                // let mouseOffset = { x: 0, y: 0 }
+                // if (itemRect) {
+                //     mouseOffset = {
+                //         x: event.clientX - itemRect.left,
+                //         y: event.clientY - itemRect.top,
+                //     };
+                // }
                 const itemData: { itemId: string, item_name: string } = source.data.item as { itemId: string; item_name: string }
-                setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: location.current.input.clientX, y: location.current.input.clientY }]);
+                const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, source.element.clientHeight as number, source.element.clientWidth as number)
+                setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }]);
                 setIsDraggedOver(false)
             },
         });
