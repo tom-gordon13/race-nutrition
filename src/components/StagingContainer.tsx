@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Box } from '@mui/material';
-import { FoodItemContainer } from './FoodItemContainer';
+import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 const itemList = [
@@ -39,7 +39,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
             flexDirection: 'row'
         }}>
             {itemList.map((item) => (
-                <FoodItemContainer
+                <FoodItemCard
                     key={item.itemId}
                     item={item}
                     onDropInRaceContainer={handleDropInRaceContainer}

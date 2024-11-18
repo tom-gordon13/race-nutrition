@@ -1,14 +1,20 @@
 import { Box } from '@mui/material';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
 
 
 interface RaceContainerTopProps {
     raceDuration: number
+}
+
+interface DropEvent {
+    source: Object;
+    location: Object;
 }
 
 const conatinerDimensions = {
@@ -21,6 +27,12 @@ const isValid = true
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [isDraggedOver, setIsDraggedOver] = useState(false);
+    const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+
+    const handleDrop = useCallback(({ source, location }: DropEvent) => {
+        // Logic to handle the drop event will be added here
+        console.log("handleDrop", source, location);
+    }, []);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -28,29 +40,41 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
 
         return dropTargetForElements({
             element: el,
-            getData: () => ({}),
+            getData: ({ input, element, source }) => {
+
+                const data = { type: "card", cardId: source.data.itemId };
+
+                // Attaches the closest edge (top or bottom) to the data object
+                // This data will be used to determine where to drop card relative
+                // to the target card.
+                return attachClosestEdge(data, {
+                    input,
+                    element,
+                    allowedEdges: ["top", "bottom"],
+                });
+            },
+            getIsSticky: () => true,
+            onDragStart: () => setIsDraggedOver(true),
             onDragEnter: () => {
                 if (isValid) setIsDraggedOver(true)
             },
             onDragLeave: () => setIsDraggedOver(false),
-            onDrop: () => setIsDraggedOver(false),
+            onDrop: ({ source, location }) => {
+                console.log('here', source.data.item, location)
+                const itemData: { itemId: string, item_name: string } = source.data.item as { itemId: string; item_name: string }
+                setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: location.current.input.clientX, y: location.current.input.clientY }]);
+                setIsDraggedOver(false)
+            },
         });
     }, []);
 
+    useEffect(() => {
+        console.log(allocatedItems)
+    }, [allocatedItems])
 
     useEffect(() => {
         return monitorForElements({
-            onDrop({ source, location }) {
-                const destination = location.current.dropTargets[0];
-                if (!destination) {
-                    // if dropped outside of any drop targets
-                    return;
-                }
-                const destinationLocation = destination.data.location;
-                const sourceLocation = source.data.location;
-                const pieceType = source.data.pieceType;
-
-            },
+            onDrop: handleDrop
         });
     }, []);
 
@@ -86,7 +110,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                     }}
                 />
             ))}
-
+            {allocatedItems.map((item, index) => (
+                <AllocatedFoodItem key={item.instance_id} foodItem={item} />
+            ))}
         </Box>
     );
 };

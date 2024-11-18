@@ -6,10 +6,6 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
 interface FoodItemContainerProps {
     foodItem: AllocatedItem,
-    removeItem: (instance_id: number) => void;
-    rightEdge: number;
-    containerTop: number;
-    containerBottom: number;
 }
 
 const margin = 5
@@ -20,7 +16,7 @@ const containerDimensions = {
     width: '120px',
 }
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, removeItem, rightEdge, containerBottom, containerTop }) => {
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem }) => {
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const [position, setPosition] = useState({ x: foodItem.x, y: foodItem.y });
     const [originalPosition, setOriginalPosition] = useState({ x: foodItem.x, y: foodItem.y });
@@ -32,91 +28,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
         setIsInEditMode(!isInEditMode);
     };
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setOriginalPosition(position);
-        setIsDragging(true);
-
-        setDragOffset({
-            x: e.clientX - position.x,
-            y: e.clientY - position.y,
-        });
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-        if (isDragging) {
-            const newX = Math.max(margin, Math.min(e.clientX - dragOffset.x, rightEdge - parseInt(containerDimensions.width, 10) - margin));
-            const newY = Math.max(margin, Math.min(e.clientY - dragOffset.y, containerBottom - parseInt(containerDimensions.height, 10) / 2));
-
-            setPosition({ x: newX, y: newY });
-        }
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-
-        const overlappingItem = allocatedItems.find(
-            (item) =>
-                item.instance_id !== foodItem.instance_id &&
-                Math.abs(item.x - position.x) < parseInt(containerDimensions.width, 10) &&
-                Math.abs(item.y - position.y) < parseInt(containerDimensions.height, 10)
-        );
-
-        if (position.y < 0 || position.y > containerBottom) {
-            setPosition(originalPosition);
-
-        }
-        else if (overlappingItem) {
-
-            setPosition((prevPosition) => ({
-                x: prevPosition.x,
-                y: overlappingItem.y + parseInt(containerDimensions.height, 10) + margin,
-            }));
-        }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (!isInEditMode) return;
-
-        if (e.key === 'ArrowRight') {
-            setPosition((prev) => ({
-                ...prev,
-                x: Math.min(rightEdge - parseInt(containerDimensions.width, 10) - margin, prev.x + stepSize),
-            }));
-        }
-        if (e.key === 'ArrowLeft') {
-            setPosition((prev) => ({
-                ...prev,
-                x: Math.max(margin, prev.x - stepSize),
-            }));
-        }
-    };
-
-    useEffect(() => {
-        if (isInEditMode) {
-            window.addEventListener('keydown', handleKeyDown);
-        } else {
-            window.removeEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isInEditMode]);
-
-    useEffect(() => {
-        if (isDragging) {
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
-        } else {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        }
-
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [isDragging]);
 
     return (
         <Box
@@ -131,14 +42,12 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ foodItem, 
                 border: '1px solid black',
                 cursor: isDragging ? 'grabbing' : 'grab',
             }}
-            onMouseDown={handleMouseDown}
             onDoubleClick={handleClick}
         >
             {foodItem.item_name} - {position.x}, {position.y}
             <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => removeItem(foodItem.instance_id)}
                 sx={{ marginTop: '0.5rem', display: isInEditMode ? 'block' : 'none' }}
             >
                 Remove
