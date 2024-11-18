@@ -36,6 +36,13 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         return { x: initial_x - x_offset, y: initial_y - y_offset }
     }
 
+    const checkValidDrop = (x: number, y: number) => {
+        invariant(containerRef?.current?.clientHeight);
+        const valid_y = containerRef.current.clientHeight > y && y > 0
+        const valid_x = containerRef.current.clientWidth > x && x > 0
+        return valid_x && valid_y
+    }
+
     const handleDrop = useCallback(({ source, location }: DropEvent) => {
         // Logic to handle the drop event will be added here
         console.log("handleDrop", source, location);
@@ -67,18 +74,10 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             onDragLeave: () => setIsDraggedOver(false),
             onDrop: ({ source, location }) => {
-                const itemRect = containerElement.getBoundingClientRect();
-                console.log('here', source)
-                // let mouseOffset = { x: 0, y: 0 }
-                // if (itemRect) {
-                //     mouseOffset = {
-                //         x: event.clientX - itemRect.left,
-                //         y: event.clientY - itemRect.top,
-                //     };
-                // }
                 const itemData: { itemId: string, item_name: string } = source.data.item as { itemId: string; item_name: string }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, source.element.clientHeight as number, source.element.clientWidth as number)
-                setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }]);
+                const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
+                if (isValidDrop) setAllocatedItems((prev) => [...prev, { item_id: itemData.itemId, instance_id: 123, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }]);
                 setIsDraggedOver(false)
             },
         });
