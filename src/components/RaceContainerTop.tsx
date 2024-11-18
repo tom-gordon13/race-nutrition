@@ -86,15 +86,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 if (isValidDrop && isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
                 setAllocatedItems([...newAllocatedItems])
                 setIsDraggedOver(false)
-                console.log("Are arrays the same?", allocatedItems === newAllocatedItems)
             },
         });
     }, [allocatedItems]);
-
-    useEffect(() => {
-        console.log("Allocated Items Changed:", allocatedItems);
-    }, [allocatedItems]);
-
 
     useEffect(() => {
         return monitorForElements({
