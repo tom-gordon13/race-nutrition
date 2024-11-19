@@ -123,13 +123,16 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
-                const isUpdate = !!itemData.instance_id
-                const newInstanceId = allocatedItems.length + 1
-                const newItem = { item_id: itemData.item_id, instance_id: isUpdate ? itemData.instance_id || 0 : newInstanceId, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
-                let newAllocatedItems: AllocatedItem[] = []
-                if (isValidDrop && !isUpdate) newAllocatedItems = [...allocatedItems, newItem];
-                if (isValidDrop && isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
-                setAllocatedItems([...newAllocatedItems])
+                if (isValidDrop) {
+                    const isUpdate = !!itemData.instance_id
+                    const newInstanceId = allocatedItems.length + 1
+                    const newItem = { item_id: itemData.item_id, instance_id: isUpdate ? itemData.instance_id || 0 : newInstanceId, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
+                    let newAllocatedItems: AllocatedItem[] = []
+                    if (isValidDrop && !isUpdate) newAllocatedItems = [...allocatedItems, newItem];
+                    if (isValidDrop && isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
+                    setAllocatedItems([...newAllocatedItems])
+                }
+
                 setIsDraggedOver(false)
             },
         });
