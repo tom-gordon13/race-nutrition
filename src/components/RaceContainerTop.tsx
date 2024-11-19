@@ -101,6 +101,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             getIsSticky: () => true,
             onDragStart: ({ source, location }) => {
+                setIsDraggedOver(true)
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {
