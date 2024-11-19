@@ -123,6 +123,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
+<<<<<<< HEAD
                 if (isValidDrop) {
                     const isUpdate = !!itemData.instance_id
                     const newInstanceId = allocatedItems.length + 1
@@ -133,6 +134,16 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                     setAllocatedItems([...newAllocatedItems])
                 }
 
+=======
+                if (!isValidDrop) return
+                const isUpdate = !!itemData.instance_id
+                const newInstanceId = allocatedItems.length + 1
+                const newItem = { item_id: itemData.item_id, instance_id: isUpdate ? itemData.instance_id || 0 : newInstanceId, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
+                let newAllocatedItems: AllocatedItem[] = []
+                if (!isUpdate) newAllocatedItems = [...allocatedItems, newItem];
+                if (isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
+                setAllocatedItems([...newAllocatedItems])
+>>>>>>> 5201d8d (fix issue with isValidDrop)
                 setIsDraggedOver(false)
             },
         });
@@ -150,7 +161,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         }
     };
 
-    const lineCount = raceDuration - 1;
+    const lineCount = raceDuration + 1;
 
     return (
         <Box

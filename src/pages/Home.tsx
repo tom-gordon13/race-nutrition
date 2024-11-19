@@ -7,7 +7,7 @@ import { AllocatedItem } from '../interfaces/AllocatedItem'
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 
-const raceDurationSample = 8
+const raceDurationSample = 10
 
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
