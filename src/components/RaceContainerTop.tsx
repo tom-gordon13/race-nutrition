@@ -117,7 +117,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             onDragEnter: () => {
                 if (isValid) setIsDraggedOver(true)
             },
-            onDragLeave: () => setIsDraggedOver(false),
+            onDragLeave: () => {setIsDraggedOver(false) 
+                console.log('leave')},
             onDrop: ({ source, location }) => {
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY)
@@ -139,6 +140,12 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     //         onDrop: handleDrop
     //     });
     // }, []);
+    const handleDragLeave = (e:any) => {
+        if (e.relatedTarget === null || !e.currentTarget.contains(e.relatedTarget)) {
+            setIsDraggedOver(false);
+            console.log('leave');
+        }
+    };
 
     const lineCount = raceDuration - 1;
 
@@ -146,6 +153,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         <Box
             id="race-container"
             ref={containerRef}
+            onDragLeave={handleDragLeave}
+            onDragOver={() => setIsDraggedOver(true)}
             sx={{
                 position: 'relative',
                 padding: '1rem',
