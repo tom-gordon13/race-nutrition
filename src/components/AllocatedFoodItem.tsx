@@ -75,6 +75,35 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             }))
     }, []);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (!isInEditMode) return;
+
+        if (e.key === 'ArrowRight') {
+            setPosition((prev) => ({
+                ...prev,
+                x: Math.min(parseInt(containerDimensions.width, 10) - margin, prev.x + stepSize),
+            }));
+        }
+        if (e.key === 'ArrowLeft') {
+            setPosition((prev) => ({
+                ...prev,
+                x: Math.max(margin, prev.x - stepSize),
+            }));
+        }
+    };
+
+    useEffect(() => {
+        if (isInEditMode) {
+            window.addEventListener('keydown', handleKeyDown);
+        } else {
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isInEditMode]);
+
 
     return (
         <Box
