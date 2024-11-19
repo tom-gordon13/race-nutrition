@@ -3,10 +3,11 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
+import { BaseEventPayload, ElementDragType } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 
 
 interface RaceContainerTopProps {
@@ -14,8 +15,14 @@ interface RaceContainerTopProps {
 }
 
 interface DropEvent {
-    source: Object;
-    location: Object;
+    source: any;
+    location: any;
+    input: any
+}
+
+interface DragStartEvent {
+    source: any,
+    input: any
 }
 
 const conatinerDimensions = {
@@ -28,13 +35,18 @@ const isValid = true
 export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [isDraggedOver, setIsDraggedOver] = useState(false);
+    const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-    const adjustCoordinates = (initial_x: number, initial_y: number, dropped_obj_height: number, dropped_obj_width: number) => {
-        const y_offset = dropped_obj_height + (containerRef?.current?.offsetTop ?? 0)
-        const x_offset = dropped_obj_width + (containerRef?.current?.offsetLeft ?? 0)
-        return { x: initial_x - x_offset, y: initial_y - y_offset }
-    }
+    const adjustCoordinates = (initialX: number, initialY: number) => {
+        const containerTop = containerRef?.current?.offsetTop ?? 0;
+        const containerLeft = containerRef?.current?.offsetLeft ?? 0;
+
+        return {
+            x: initialX - containerLeft - mouseOffset.x,
+            y: initialY - containerTop - mouseOffset.y,
+        };
+    };
 
     const checkValidDrop = (x: number, y: number) => {
         invariant(containerRef?.current?.clientHeight);
@@ -43,10 +55,31 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         return valid_x && valid_y
     }
 
-    const handleDrop = useCallback(({ source, location }: DropEvent) => {
-        // Logic to handle the drop event will be added here
-        console.log("handleDrop", source, location);
-    }, []);
+    const handleDrop = ({ input, source }: DropEvent) => {
+        const adjustedCoordinates = adjustCoordinates(input.clientX, input.clientY);
+        console.log("Adjusted Coordinates:", adjustedCoordinates);
+
+        const itemData: { item_id: string; item_name: string; instance_id?: number } = source.data.item;
+
+        const isUpdate = !!itemData.instance_id;
+        const newInstanceId = isUpdate ? itemData.instance_id! : allocatedItems.length + 1;
+
+        const newItem: AllocatedItem = {
+            item_id: itemData.item_id,
+            item_name: itemData.item_name,
+            instance_id: newInstanceId,
+            x: adjustedCoordinates.x,
+            y: adjustedCoordinates.y,
+        };
+
+        setAllocatedItems((prev) =>
+            isUpdate
+                ? prev.map((item) => (item.instance_id === newItem.instance_id ? newItem : item))
+                : [...prev, newItem]
+        );
+
+        setIsDraggedOver(false);
+    };
 
     useEffect(() => {
         const containerElement = containerRef.current;
@@ -55,7 +88,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         return dropTargetForElements({
             element: containerElement,
             getData: ({ input, element, source }) => {
-                console.log('source', source)
                 const data = { type: "card", cardId: source.data.itemId };
 
                 // Attaches the closest edge (top or bottom) to the data object
@@ -68,15 +100,26 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 });
             },
             getIsSticky: () => true,
-            onDragStart: () => setIsDraggedOver(true),
+            onDragStart: ({ source, location }) => {
+                if (source.element) {
+                    const rect = source.element.getBoundingClientRect();
+                    const mouseOffset = {
+                        x: location.current.input.clientX - rect.left,
+                        y: location.current.input.clientY - rect.top,
+                    };
+                    console.log("Source:", source, "Bounding Rect:", rect, "Mouse Offset:", mouseOffset);
+                    setMouseOffset(mouseOffset)
+                } else {
+                    console.error("Source element is not available in onDragStart");
+                }
+            },
             onDragEnter: () => {
                 if (isValid) setIsDraggedOver(true)
             },
             onDragLeave: () => setIsDraggedOver(false),
             onDrop: ({ source, location }) => {
-
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
-                const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, source.element.clientHeight as number, source.element.clientWidth as number)
+                const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 const isUpdate = !!itemData.instance_id
                 const newInstanceId = allocatedItems.length + 1
@@ -90,11 +133,11 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         });
     }, [allocatedItems]);
 
-    useEffect(() => {
-        return monitorForElements({
-            onDrop: handleDrop
-        });
-    }, []);
+    // useEffect(() => {
+    //     return monitorForElements({
+    //         onDrop: handleDrop
+    //     });
+    // }, []);
 
     const lineCount = raceDuration - 1;
 
