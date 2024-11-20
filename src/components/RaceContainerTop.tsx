@@ -30,6 +30,11 @@ const containerDimensions = {
     height: '25rem'
 }
 
+const allocatedItemDimensions = {
+    height: '70px',
+    width: '120px',
+}
+
 const remToPixels = (rem: string): number => {
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize); // Get root font size
     return parseFloat(rem) * rootFontSize; // Convert rem to a number and multiply by root font size
@@ -43,15 +48,34 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-    const adjustCoordinates = (initialX: number, initialY: number) => {
+    const adjustCoordinates = (initialX: number, initialY: number, instance_id: number) => {
         const containerTop = containerRef?.current?.offsetTop ?? 0;
         const containerLeft = containerRef?.current?.offsetLeft ?? 0;
         const containerRect = containerRef?.current?.getBoundingClientRect();
-        return {
-            x: initialX - containerLeft - mouseOffset.x,
-            // y: initialY - containerTop - mouseOffset.y,
-            y: 3
-        };
+
+        let x = initialX - containerLeft - mouseOffset.x;
+        let y = 3;
+
+        let overlapping = true;
+        while (overlapping) {
+            overlapping = false;
+
+            for (const allocatedItem of allocatedItems) {
+                if (allocatedItem.instance_id === instance_id) continue;
+                const isHorizontalOverlap =
+                    Math.abs(allocatedItem.x - x) < parseInt(allocatedItemDimensions.width);
+                const isVerticalOverlap =
+                    Math.abs(allocatedItem.y - y) < parseInt(allocatedItemDimensions.height);
+                console.log(isHorizontalOverlap, isVerticalOverlap)
+                if (isHorizontalOverlap && isVerticalOverlap) {
+                    y += parseInt(allocatedItemDimensions.height) + 3;
+                    overlapping = false;
+                    // break;
+                }
+            }
+        }
+
+        return { x: x, y: y };
     };
 
     const checkValidDrop = (x: number, y: number) => {
@@ -102,7 +126,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             onDrop: ({ source, location }) => {
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
-                const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY)
+                const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, itemData.instance_id as number)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 if (isValidDrop) {
                     const isUpdate = !!itemData.instance_id

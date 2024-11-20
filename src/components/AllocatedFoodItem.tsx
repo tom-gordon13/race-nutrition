@@ -28,8 +28,8 @@ const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
     width: rect.width,
     height: rect.height,
     x: rect.x,
-    y: newTop, // Update `y` to match `top`
-    toJSON: rect.toJSON // Preserve the method for compatibility
+    y: newTop,
+    toJSON: rect.toJSON
 });
 
 export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) => {
@@ -55,25 +55,24 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         const allocatedItemElement = allocatedItemRef.current;
         if (!allocatedItemElement) return;
 
-        const raceContainer = document.querySelector('#race-container') as HTMLElement; // Get RaceContainer
+        const raceContainer = document.querySelector('#race-container') as HTMLElement;
         if (!raceContainer) {
             console.error('RaceContainer not found!');
             return;
         }
 
-        const raceContainerRect = raceContainer.getBoundingClientRect(); // Get RaceContainer bounds
-        const currentRect = allocatedItemElement.getBoundingClientRect(); // Get the bounding box of the dropped item
+        const raceContainerRect = raceContainer.getBoundingClientRect();
+        const currentRect = allocatedItemElement.getBoundingClientRect();
 
-        // Adjust coordinates relative to the RaceContainer
-        const relativeY = currentRect.y - raceContainerRect.y; // Relative Y within the container
-        let newY = relativeY; // Start with the relative Y position
+        const relativeY = currentRect.y - raceContainerRect.y;
+        let newY = relativeY;
         let overlapping = false;
 
         do {
             overlapping = false;
 
             for (const otherItem of allocatedItems) {
-                if (otherItem.instance_id === item.instance_id) continue; // Skip the dropped item itself
+                if (otherItem.instance_id === item.instance_id) continue;
 
                 const otherElement = document.querySelector(
                     `[data-item-id="${otherItem.instance_id}"]`
@@ -82,28 +81,26 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
 
                 const otherRect = otherElement.getBoundingClientRect();
                 const simulatedRect = simulateRect(
-                    { ...currentRect, y: newY + raceContainerRect.y }, // Adjust simulated rect back to global coordinates
+                    { ...currentRect, y: newY + raceContainerRect.y },
                     newY + raceContainerRect.y
                 );
 
                 if (checkOverlap(simulatedRect, otherRect)) {
-                    // If overlap is detected, move the dropped item down
-                    newY += 75; // Adjust the Y position relative to the container
+                    newY += 75;
                     overlapping = true;
-                    break; // Exit loop to apply the new position
+                    break;
                 }
             }
         } while (overlapping);
 
-        // Convert the final relative Y back to absolute position
+
         const absoluteY = newY
         console.log(absoluteY, newY)
 
-        // Update the dropped item's position
+
         const newPosition = { x: position.x, y: absoluteY }
         setPosition(() => (newPosition));
 
-        // Update the allocated items state
         const newItem = { ...item, y: absoluteY, x: position.x };
         const newAllocatedItems = [
             ...allocatedItems.filter((itemData) => itemData.instance_id !== item.instance_id),
