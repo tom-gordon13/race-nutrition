@@ -16,9 +16,21 @@ const margin = 5
 const stepSize = 3
 
 const containerDimensions = {
-    height: '80px',
+    height: '70px',
     width: '120px',
 }
+
+const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
+    top: newTop,
+    bottom: newTop + rect.height,
+    left: rect.left,
+    right: rect.right,
+    width: rect.width,
+    height: rect.height,
+    x: rect.x,
+    y: newTop, // Update `y` to match `top`
+    toJSON: rect.toJSON // Preserve the method for compatibility
+});
 
 export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) => {
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
@@ -27,9 +39,84 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [originalPosition, setOriginalPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const { allocatedItems } = useAllocatedItems();
+    const [hasResolved, setHasResolved] = useState(false);
+    const { allocatedItems, setAllocatedItems } = useAllocatedItems();
 
-    useEffect(() => { console.log(position) }, [position])
+    const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
+        return !(
+            rect1.right <= rect2.left ||
+            rect1.left >= rect2.right ||
+            rect1.bottom <= rect2.top ||
+            rect1.top >= rect2.bottom
+        );
+    };
+
+    const resolveOverlapOnDrop = () => {
+        const allocatedItemElement = allocatedItemRef.current;
+        if (!allocatedItemElement) return;
+
+        const raceContainer = document.querySelector('#race-container') as HTMLElement; // Get RaceContainer
+        if (!raceContainer) {
+            console.error('RaceContainer not found!');
+            return;
+        }
+
+        const raceContainerRect = raceContainer.getBoundingClientRect(); // Get RaceContainer bounds
+        const currentRect = allocatedItemElement.getBoundingClientRect(); // Get the bounding box of the dropped item
+
+        // Adjust coordinates relative to the RaceContainer
+        const relativeY = currentRect.y - raceContainerRect.y; // Relative Y within the container
+        let newY = relativeY; // Start with the relative Y position
+        let overlapping = false;
+
+        do {
+            overlapping = false;
+
+            for (const otherItem of allocatedItems) {
+                if (otherItem.instance_id === item.instance_id) continue; // Skip the dropped item itself
+
+                const otherElement = document.querySelector(
+                    `[data-item-id="${otherItem.instance_id}"]`
+                ) as HTMLElement;
+                if (!otherElement) continue;
+
+                const otherRect = otherElement.getBoundingClientRect();
+                const simulatedRect = simulateRect(
+                    { ...currentRect, y: newY + raceContainerRect.y }, // Adjust simulated rect back to global coordinates
+                    newY + raceContainerRect.y
+                );
+
+                if (checkOverlap(simulatedRect, otherRect)) {
+                    // If overlap is detected, move the dropped item down
+                    newY += 75; // Adjust the Y position relative to the container
+                    overlapping = true;
+                    break; // Exit loop to apply the new position
+                }
+            }
+        } while (overlapping);
+
+        // Convert the final relative Y back to absolute position
+        const absoluteY = newY
+        console.log(absoluteY, newY)
+
+        // Update the dropped item's position
+        const newPosition = { x: position.x, y: absoluteY }
+        setPosition(() => (newPosition));
+
+        // Update the allocated items state
+        const newItem = { ...item, y: absoluteY, x: position.x };
+        const newAllocatedItems = [
+            ...allocatedItems.filter((itemData) => itemData.instance_id !== item.instance_id),
+            { ...newItem },
+        ];
+        setAllocatedItems(newAllocatedItems);
+    };
+
+    useEffect(() => {
+        console.log(position)
+        console.log(allocatedItems)
+    }, [position])
+
 
     const handleClick = () => {
         setIsInEditMode(!isInEditMode);
@@ -56,6 +143,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                     });
                 },
                 getIsSticky: () => true, // To make a drop target "sticky"
+                onDrop: () => { resolveOverlapOnDrop() },
                 onDragEnter: (args) => {
                     // if (args.source.data.cardId !== item.itemId) {
                     //     console.log("onDragEnter", args);
@@ -120,6 +208,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 cursor: isDragging ? 'grabbing' : 'grab',
             }}
             onDoubleClick={handleClick}
+            data-item-id={item.instance_id}
         >
             {item.item_name} - {position.x}, {position.y}
             <Button
