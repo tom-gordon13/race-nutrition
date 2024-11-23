@@ -6,6 +6,7 @@ import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/
 import invariant from 'tiny-invariant';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { useTheme } from '@mui/material/styles';
 
 
 interface FoodItemContainerProps {
@@ -41,6 +42,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [hasResolved, setHasResolved] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
+
+    const theme = useTheme();
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         return !(
@@ -194,7 +197,10 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 height: containerDimensions.height,
                 width: containerDimensions.width,
                 padding: '0.5rem',
-                backgroundColor: isInEditMode ? 'red' : 'lightgreen',
+                bgcolor: !isInEditMode ? theme.palette.primary.main : theme.palette.secondary.main,
+                '&:hover': {
+                    bgcolor: theme.palette.primary.light,
+                },
                 border: '1px solid black',
                 cursor: isDragging ? 'grabbing' : 'grab',
             }}

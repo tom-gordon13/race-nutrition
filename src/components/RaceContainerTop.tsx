@@ -173,7 +173,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                backgroundColor: isDraggedOver ? 'skyblue' : 'white'
+                bgcolor: isDraggedOver ? 'skyblue' : 'white'
             }}
         >
             {[...Array(lineCount)].map((_, index) => (
@@ -185,7 +185,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                         bottom: 0,
                         left: `${(index * 100) / (lineCount - 1)}%`,
                         width: '1px',
-                        backgroundColor: 'black',
+                        bgcolor: 'black',
                     }}
                 />
             ))}

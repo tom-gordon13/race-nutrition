@@ -60,7 +60,7 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
                 position: 'relative',
                 height: '4rem',
                 width: '8rem',
-                backgroundColor: isDragging ? "rgba(211, 211, 211, 0.5)" : "lightgray",
+                bgcolor: isDragging ? "rgba(211, 211, 211, 0.5)" : "lightgray",
                 border: '1px solid black',
                 display: 'flex',
                 alignItems: 'center',
