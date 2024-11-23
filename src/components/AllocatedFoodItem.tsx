@@ -172,6 +172,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 x: Math.max(margin, prev.x - stepSize),
             }));
         }
+        if (e.key === 'Enter') {
+            if (isInEditMode) setIsInEditMode(false)
+        }
     };
 
     useEffect(() => {
