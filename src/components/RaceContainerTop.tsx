@@ -181,22 +181,31 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             }}
         >
             {[...Array(lineCount)].map((_, index) => (
-                (index !== 0 && index !== lineCount) ?
-                    <Box
-                        key={index}
-                        sx={{
+                (index !== 0 && index !== lineCount - 1) ?
+                    <div>
+                        <h3 style={{
                             position: 'absolute',
-                            top: 0,
-                            bottom: 0,
                             left: `${(index * 100) / (lineCount - 1)}%`,
-                            width: '1px',
-                            bgcolor: 'black',
-                        }}
-                    /> : null
+                            bottom: containerRef?.current?.clientHeight,
+                            fontSize: '20px'
+                        }}>{index}</h3>
+                        < Box
+                            key={index}
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                left: `${(index * 100) / (lineCount - 1)}%`,
+                                width: '1px',
+                                bgcolor: 'black',
+                            }}
+                        /> </div> : null
             ))}
-            {allocatedItems.map((item) => (
-                <AllocatedFoodItem key={uuidv4()} item={item} />
-            ))}
-        </Box>
+            {
+                allocatedItems.map((item) => (
+                    <AllocatedFoodItem key={uuidv4()} item={item} />
+                ))
+            }
+        </Box >
     );
 };
