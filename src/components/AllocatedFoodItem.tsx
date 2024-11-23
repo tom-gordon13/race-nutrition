@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Box, Button } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { useEventContext } from '../context/EventContext';
 import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import invariant from 'tiny-invariant';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { useTheme } from '@mui/material/styles';
+import { floatToHoursAndMinutes } from '../utils/float-to-time'
 
 
 interface FoodItemContainerProps {
@@ -42,8 +44,11 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [hasResolved, setHasResolved] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
+    const { eventDuration } = useEventContext()
 
     const theme = useTheme();
+    const raceContainer = document.querySelector('#race-container') as HTMLElement;
+    const containerWidth = raceContainer.getBoundingClientRect().width
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         return !(
@@ -58,7 +63,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         const allocatedItemElement = allocatedItemRef.current;
         if (!allocatedItemElement) return;
 
-        const raceContainer = document.querySelector('#race-container') as HTMLElement;
         if (!raceContainer) {
             console.error('RaceContainer not found!');
             return;
@@ -213,7 +217,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             onDoubleClick={handleClick}
             data-item-id={item.instance_id}
         >
-            {item.item_name} - {position.x}, {position.y}
+            {/* {item.item_name} - {position.x}, {position.y} */}
+            {item.item_name} - {floatToHoursAndMinutes(position.x / containerWidth * eventDuration)}
             <Button
                 variant="contained"
                 color="secondary"

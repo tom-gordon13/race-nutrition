@@ -168,7 +168,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             sx={{
                 position: 'relative',
                 padding: '1rem',
-                border: '1px solid black',
+                border: `1px solid ${theme.palette.grey[300]}`,
                 width: containerDimensions.width,
                 height: containerDimensions.height,
                 marginTop: '1rem',
@@ -186,7 +186,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                         <h3 style={{
                             position: 'absolute',
                             left: `${(index * 100) / (lineCount - 1)}%`,
-                            bottom: containerRef?.current?.clientHeight,
+                            bottom: containerRef?.current?.clientHeight || '400px',
                             fontSize: '20px'
                         }}>{index}</h3>
                         < Box
@@ -197,7 +197,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                                 bottom: 0,
                                 left: `${(index * 100) / (lineCount - 1)}%`,
                                 width: '1px',
-                                bgcolor: 'black',
+                                bgcolor: 'white ',
                             }}
                         /> </div> : null
             ))}
