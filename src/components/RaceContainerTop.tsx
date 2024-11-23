@@ -7,7 +7,7 @@ import { dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-d
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
-import { BaseEventPayload, ElementDragType } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import { useTheme } from '@mui/material/styles';
 
 
 interface RaceContainerTopProps {
@@ -47,6 +47,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+
+    const theme = useTheme();
 
     const adjustCoordinates = (initialX: number, initialY: number, instance_id: number) => {
         const containerTop = containerRef?.current?.offsetTop ?? 0;
@@ -166,28 +168,31 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             sx={{
                 position: 'relative',
                 padding: '1rem',
-                border: '1px solid green',
+                border: '1px solid black',
                 width: containerDimensions.width,
                 height: containerDimensions.height,
                 marginTop: '1rem',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                bgcolor: isDraggedOver ? 'skyblue' : 'white'
+                bgcolor: isDraggedOver ? 'skyblue' : theme.palette.grey[500],
+                borderRadius: 2,
+                boxShadow: 3,
             }}
         >
             {[...Array(lineCount)].map((_, index) => (
-                <Box
-                    key={index}
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        bottom: 0,
-                        left: `${(index * 100) / (lineCount - 1)}%`,
-                        width: '1px',
-                        bgcolor: 'black',
-                    }}
-                />
+                (index !== 0 && index !== lineCount) ?
+                    <Box
+                        key={index}
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            bottom: 0,
+                            left: `${(index * 100) / (lineCount - 1)}%`,
+                            width: '1px',
+                            bgcolor: 'black',
+                        }}
+                    /> : null
             ))}
             {allocatedItems.map((item) => (
                 <AllocatedFoodItem key={uuidv4()} item={item} />

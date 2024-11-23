@@ -199,10 +199,13 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 padding: '0.5rem',
                 bgcolor: !isInEditMode ? theme.palette.primary.main : theme.palette.secondary.main,
                 '&:hover': {
-                    bgcolor: theme.palette.primary.light,
+                    bgcolor: !isInEditMode ? theme.palette.primary.light : theme.palette.secondary.light,
                 },
-                border: '1px solid black',
                 cursor: isDragging ? 'grabbing' : 'grab',
+                borderRadius: 2,
+                boxShadow: 3,
+                color: 'white',
+                fontWeight: 'bold',
             }}
             onDoubleClick={handleClick}
             data-item-id={item.instance_id}
