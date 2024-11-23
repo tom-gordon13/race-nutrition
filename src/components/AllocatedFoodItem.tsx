@@ -40,7 +40,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [hasResolved, setHasResolved] = useState(false);
-    const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+    const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         return !(
@@ -108,12 +108,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         ];
         setAllocatedItems(newAllocatedItems);
     };
-
-    useEffect(() => {
-        console.log(position)
-        console.log(allocatedItems)
-    }, [position])
-
 
     const handleClick = () => {
         setIsInEditMode(!isInEditMode);
@@ -212,6 +206,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 variant="contained"
                 color="secondary"
                 sx={{ marginTop: '0.5rem', display: isInEditMode ? 'block' : 'none' }}
+                onClick={() => removeAllocatedItem(item.instance_id)}
             >
                 Remove
             </Button>
