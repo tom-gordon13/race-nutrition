@@ -68,7 +68,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                     Math.abs(allocatedItem.x - x) < parseInt(allocatedItemDimensions.width);
                 const isVerticalOverlap =
                     Math.abs(allocatedItem.y - y) < parseInt(allocatedItemDimensions.height);
-                console.log(isHorizontalOverlap, isVerticalOverlap)
                 if (isHorizontalOverlap && isVerticalOverlap) {
                     y += parseInt(allocatedItemDimensions.height) + 3;
                     overlapping = false;

@@ -51,12 +51,17 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
-        return !(
-            rect1.right <= rect2.left ||
-            rect1.left >= rect2.right ||
-            rect1.bottom <= rect2.top ||
-            rect1.top >= rect2.bottom
-        );
+        const horizontalOverlap = rect1.right <= rect2.left || rect1.left >= rect2.right
+        const verticalOverlap = rect1.bottom <= rect2.top || rect1.top >= rect2.bottom
+
+        return horizontalOverlap && verticalOverlap
+
+        // return !(
+        //     rect1.right <= rect2.left ||
+        //     rect1.left >= rect2.right ||
+        //     rect1.bottom <= rect2.top ||
+        //     rect1.top >= rect2.bottom
+        // );
     };
 
     const resolveOverlapOnDrop = () => {
@@ -91,7 +96,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                     { ...currentRect, y: newY + raceContainerRect.y },
                     newY + raceContainerRect.y
                 );
-
                 if (checkOverlap(simulatedRect, otherRect)) {
                     newY += 75;
                     overlapping = true;
@@ -102,8 +106,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
 
 
         const absoluteY = newY
-        console.log(absoluteY, newY)
-
 
         const newPosition = { x: position.x, y: absoluteY }
         setPosition(() => (newPosition));
@@ -165,12 +167,14 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         if (!isInEditMode) return;
 
         if (e.key === 'ArrowRight') {
+            // resolveOverlapOnDrop()
             setPosition((prev) => ({
                 ...prev,
                 x: Math.min(containerWidth - margin, prev.x + stepSize),
             }));
         }
         if (e.key === 'ArrowLeft') {
+            // resolveOverlapOnDrop()
             setPosition((prev) => ({
                 ...prev,
                 x: Math.max(margin, prev.x - stepSize),

@@ -38,6 +38,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'start',
+            gap: '1%'
         }}>
             {itemList.map((item) => (
                 <FoodItemCard
