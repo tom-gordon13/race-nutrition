@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import redisClient from "./redis/redis-client";
+import { itemRoutes } from "./routes/item";
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/item", itemRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error("Error:", err);
