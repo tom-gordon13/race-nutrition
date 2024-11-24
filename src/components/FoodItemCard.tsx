@@ -4,6 +4,7 @@ import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clos
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from 'tiny-invariant';
 import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 
 interface FoodItemCardProps {
@@ -11,9 +12,15 @@ interface FoodItemCardProps {
     onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
 }
 
+const containerDimensions = {
+    height: '70px',
+    width: '120px',
+}
+
 export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceContainer }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const theme = useTheme();
 
     useEffect(() => {
         const foodItemElement = ref.current;
@@ -57,16 +64,21 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
         <Box
             ref={ref}
             sx={{
-                position: 'relative',
-                height: '4rem',
-                width: '8rem',
-                bgcolor: isDragging ? "rgba(211, 211, 211, 0.5)" : "lightgray",
-                border: '1px solid black',
+                height: containerDimensions.height,
+                width: containerDimensions.width,
+                padding: '0.5rem',
+                bgcolor: isDragging ? "rgba(211, 211, 211, 0.5)" : theme.palette.primary.main,
+                '&:hover': {
+                    bgcolor: theme.palette.primary.light
+                },
+                cursor: isDragging ? 'grabbing' : 'grab',
+                borderRadius: 2,
+                boxShadow: 3,
+                color: 'white',
+                fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'grab',
-                marginBottom: '1rem',
             }}
         >
             {item.item_name}
