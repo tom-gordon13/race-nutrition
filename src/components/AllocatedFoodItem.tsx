@@ -8,7 +8,7 @@ import invariant from 'tiny-invariant';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { useTheme } from '@mui/material/styles';
-import { floatToHoursAndMinutes } from '../utils/float-to-time'
+import { floatToHoursAndMinutes, getOneMinuteStepSize } from '../utils/float-to-time'
 
 
 interface FoodItemContainerProps {
@@ -16,7 +16,6 @@ interface FoodItemContainerProps {
 }
 
 const margin = 5
-const stepSize = 3
 
 const containerDimensions = {
     height: '70px',
@@ -49,6 +48,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const theme = useTheme();
     const raceContainer = document.querySelector('#race-container') as HTMLElement;
     const containerWidth = raceContainer.getBoundingClientRect().width
+    const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         return !(
@@ -167,7 +167,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         if (e.key === 'ArrowRight') {
             setPosition((prev) => ({
                 ...prev,
-                x: Math.min(parseInt(containerDimensions.width, 10) - margin, prev.x + stepSize),
+                x: Math.min(containerWidth - margin, prev.x + stepSize),
             }));
         }
         if (e.key === 'ArrowLeft') {
