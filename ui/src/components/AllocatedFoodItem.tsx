@@ -47,7 +47,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
 
     const theme = useTheme();
     const raceContainer = document.querySelector('#race-container') as HTMLElement;
-    const containerWidth = raceContainer.getBoundingClientRect().width
+    const raceContainerRect = raceContainer.getBoundingClientRect()
+    const containerWidth = raceContainerRect.width
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
@@ -55,16 +56,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         const verticalOverlap = rect1.bottom <= rect2.top || rect1.top >= rect2.bottom
 
         return horizontalOverlap && verticalOverlap
-
-        // return !(
-        //     rect1.right <= rect2.left ||
-        //     rect1.left >= rect2.right ||
-        //     rect1.bottom <= rect2.top ||
-        //     rect1.top >= rect2.bottom
-        // );
     };
 
-    const resolveOverlapOnDrop = () => {
+    const resolveOverlapOnDrop = (keydown: boolean = false) => {
         const allocatedItemElement = allocatedItemRef.current;
         if (!allocatedItemElement) return;
 
@@ -73,7 +67,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             return;
         }
 
-        const raceContainerRect = raceContainer.getBoundingClientRect();
+        // const raceContainerRect = raceContainer.getBoundingClientRect();
         const currentRect = allocatedItemElement.getBoundingClientRect();
 
         const relativeY = currentRect.y - raceContainerRect.y;
@@ -97,7 +91,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                     newY + raceContainerRect.y
                 );
                 if (checkOverlap(simulatedRect, otherRect)) {
-                    newY += 75;
+                    console.log('overlap!')
+                    newY += 750;
                     overlapping = true;
                     break;
                 }
@@ -108,7 +103,9 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         const absoluteY = newY
 
         const newPosition = { x: position.x, y: absoluteY }
+        console.log('newposition', newPosition)
         setPosition(() => (newPosition));
+        if (keydown) return
 
         const newItem = { ...item, y: absoluteY, x: position.x };
         const newAllocatedItems = [
@@ -174,7 +171,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             }));
         }
         if (e.key === 'ArrowLeft') {
-            // resolveOverlapOnDrop()
+            // resolveOverlapOnDrop(true)
             setPosition((prev) => ({
                 ...prev,
                 x: Math.max(margin, prev.x - stepSize),
@@ -184,6 +181,32 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             if (isInEditMode) setIsInEditMode(false)
         }
     };
+
+    // const handleKeyDown = (e: KeyboardEvent) => {
+    //     if (!isInEditMode) return;
+
+    //     const containerTop = raceContainerRect?.current?.offsetTop ?? 0;
+    //     const containerLeft = raceContainerRect?.current?.offsetLeft ?? 0;
+
+    //     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    //         setPosition((prev) => {
+    //             const newX =
+    //                 e.key === "ArrowRight"
+    //                     ? Math.min(containerWidth - margin, prev.x + stepSize)
+    //                     : Math.max(margin, prev.x - stepSize);
+
+    //             const adjustedPosition = adjustCoordinates(newX + containerLeft, prev.y + containerTop, item.instance_id);
+    //             return {
+    //                 x: adjustedPosition.x - containerLeft,
+    //                 y: adjustedPosition.y - containerTop,
+    //             };
+    //         });
+    //     }
+
+    //     if (e.key === "Enter") {
+    //         if (isInEditMode) setIsInEditMode(false);
+    //     }
+    // };
 
     useEffect(() => {
         if (isInEditMode) {
