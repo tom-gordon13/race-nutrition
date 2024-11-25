@@ -6,6 +6,7 @@ import { NavMain } from '../components/NavMain';
 import { AllocatedItem } from '../interfaces/AllocatedItem'
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { fetchItem } from '../services/get-item';
 
 const raceDurationSample = 10
 
