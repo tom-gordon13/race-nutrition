@@ -12,6 +12,7 @@ const raceDurationSample = 10
 
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+    fetchItem('skratch')
 
     return (
         <>
