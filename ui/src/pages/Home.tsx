@@ -6,14 +6,13 @@ import { NavMain } from '../components/NavMain';
 import { AllocatedItem } from '../interfaces/AllocatedItem'
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { fetchItem } from '../services/get-item';
+import { FoodSearchContainer } from '../components/FoodSearchContainer';
 
 const raceDurationSample = 10
 
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    fetchItem('skratch')
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
@@ -24,8 +23,14 @@ export const Home = () => {
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
                 <Button onClick={toggleDrawer(true)}>Search for Items</Button>
-                <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)} anchor='right'>
-                    Food search panel
+                <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)} anchor='right' PaperProps={{
+                    sx: {
+                        width: "40vw",
+                        maxWidth: "40vw",
+                        height: "100vh",
+                    },
+                }}>
+                    <FoodSearchContainer />
                 </Drawer>
 
                 <Grid container spacing={2} alignItems="flex-start">

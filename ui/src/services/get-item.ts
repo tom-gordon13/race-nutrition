@@ -7,7 +7,6 @@ export const fetchItem = async (inputValue: string) => {
         const response = await axios.get(`http://localhost:${API_PORT}/item`, {
             params: { query: inputValue },
         });
-
         return response
     } catch (error: any) {
         console.error('Error fetching item: ', error)
