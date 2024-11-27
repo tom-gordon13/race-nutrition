@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Box } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { StagedItem } from '../pages/Home';
 
 const itemList = [
     {
@@ -18,13 +19,14 @@ const itemList = [
     }
 ]
 
-interface StagingContainerProps {
 
+interface StagingContainerProps {
+    stagedItems: StagedItem[]
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
 
     return (
@@ -40,7 +42,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ }) => {
             justifyContent: 'start',
             gap: '1%'
         }}>
-            {itemList.map((item) => (
+            {stagedItems.map((item) => (
                 <FoodItemCard
                     key={item.item_id}
                     item={item}

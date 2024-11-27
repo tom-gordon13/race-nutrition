@@ -3,12 +3,13 @@ import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from 'tiny-invariant';
-import { Box, Tooltip } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 
 interface FoodSearchResult {
-    item: any
+    item: any,
+    addToStagedItems: Function
 }
 
 const containerDimensions = {
@@ -16,7 +17,9 @@ const containerDimensions = {
     width: '120px',
 }
 
-export const FoodSearchResult: React.FC<FoodSearchResult> = ({ item }) => {
+const fallbackText = 'N/A'
+
+export const FoodSearchResult: React.FC<FoodSearchResult> = ({ item, addToStagedItems }) => {
     const theme = useTheme();
 
 
@@ -24,33 +27,37 @@ export const FoodSearchResult: React.FC<FoodSearchResult> = ({ item }) => {
         <Tooltip
             title={
                 <>
-                    Brand Name: {item.brandName}
+                    Brand Name: {item.brandName || fallbackText}
                     <br />
-                    Brand Owner: {item.brandOwner}
+                    Brand Owner: {item.brandOwner || fallbackText}
                     <br />
-                    Description: {item.description}
+                    Description: {item.description || fallbackText}
                     <br />
-                    Category: {item.foodCategory}
+                    Category: {item.foodCategory || fallbackText}
                 </>
             } arrow>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    height: containerDimensions.height,
-                    width: containerDimensions.width,
-                    padding: '0.5rem',
-                    bgcolor: theme.palette.primary.main,
-                    '&:hover': {
-                        bgcolor: theme.palette.primary.light
-                    },
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    color: 'white',
-                    fontWeight: 'bold',
-                }}
+            <Button
+                onClick={() => addToStagedItems(item)}
             >
-                {item.brandName} - {item.description}
-            </Box>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        height: containerDimensions.height,
+                        width: containerDimensions.width,
+                        padding: '0.5rem',
+                        bgcolor: theme.palette.primary.main,
+                        '&:hover': {
+                            bgcolor: theme.palette.primary.light
+                        },
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        color: 'white',
+                        fontSize: '10px'
+                    }}
+                >
+                    {item.brandName || fallbackText} - {item.description || fallbackText}
+                </Box>
+            </Button>
         </Tooltip>
     );
 }

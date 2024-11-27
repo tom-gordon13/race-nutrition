@@ -10,13 +10,36 @@ import { FoodSearchContainer } from '../components/FoodSearchContainer';
 
 const raceDurationSample = 10
 
+export interface StagedItem {
+    item_id: string,
+    item_name: string,
+    item_brand: string
+}
+
+export interface searchedItem {
+    fdcId?: string
+    description?: string
+    brandName?: string
+}
+
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
     };
+
+    const addToStagedItems = (item: searchedItem) => {
+        const newItem = {
+            item_id: item?.fdcId || '',
+            item_name: item?.description || '',
+            item_brand: item?.brandName || ''
+        }
+
+        setStagedItems([...stagedItems, newItem])
+    }
 
     return (
         <>
@@ -30,12 +53,12 @@ export const Home = () => {
                         height: "100vh",
                     },
                 }}>
-                    <FoodSearchContainer />
+                    <FoodSearchContainer addToStagedItems={addToStagedItems} />
                 </Drawer>
 
                 <Grid container spacing={2} alignItems="flex-start">
                     <Grid item xs={8}>
-                        <StagingContainer />
+                        <StagingContainer stagedItems={stagedItems} />
                     </Grid>
                     <Grid item xs={4}>
                         <NutritionInfoContainer />

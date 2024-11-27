@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 
 
 interface FoodItemCardProps {
-    item: { item_id: string, item_name: string }
+    item: { item_id: string, item_name: string, item_brand: string }
     onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
 }
 
@@ -75,13 +75,13 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
                 borderRadius: 2,
                 boxShadow: 3,
                 color: 'white',
-                fontWeight: 'bold',
+                fontSize: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
             }}
         >
-            {item.item_name}
+            {item.item_brand} - {item.item_name}
         </Box>
     );
 }

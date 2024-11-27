@@ -4,12 +4,12 @@ import { Box, Button, Container, Grid, Input } from '@mui/material';
 import { fetchItem } from '../services/get-item';
 
 interface FoodSearchContainerProps {
-
+    addToStagedItems: Function
 }
 
 
 
-export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ }) => {
+export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToStagedItems }) => {
     const [inputValue, setInputValue] = useState<string>('')
     const [searchResults, setSearchResults] = useState<object[]>([])
 
@@ -38,11 +38,11 @@ export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ }) => 
             <Grid container
                 columnSpacing={3}
                 rowSpacing={12}
-                sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}
+                sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: 0 }}
             >
                 {searchResults.map((item, index) =>
                 (<Grid item xs={2.5} key={index}>
-                    <FoodSearchResult item={item} />
+                    <FoodSearchResult item={item} addToStagedItems={addToStagedItems} />
                 </Grid>)
                 )}
             </Grid>
