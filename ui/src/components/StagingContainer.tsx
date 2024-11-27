@@ -22,11 +22,12 @@ const itemList = [
 
 interface StagingContainerProps {
     stagedItems: StagedItem[]
+    removeStagedItem: Function
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
 
     return (
@@ -47,6 +48,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems 
                     key={item.item_id}
                     item={item}
                     onDropInRaceContainer={handleDropInRaceContainer}
+                    removeStagedItem={removeStagedItem}
                 />
             ))}
 

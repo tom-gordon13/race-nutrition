@@ -41,6 +41,14 @@ export const Home = () => {
         setStagedItems([...stagedItems, newItem])
     }
 
+    const removeStagedItem = (item: StagedItem) => {
+        console.log(item)
+        const newStageditems = stagedItems.filter((stagedItem) => item.item_id !== stagedItem.item_id)
+        console.log(stagedItems)
+        console.log(newStageditems)
+        setStagedItems([...newStageditems])
+    }
+
     return (
         <>
             <NavMain />
@@ -58,7 +66,7 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start">
                     <Grid item xs={8}>
-                        <StagingContainer stagedItems={stagedItems} />
+                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} />
                     </Grid>
                     <Grid item xs={4}>
                         <NutritionInfoContainer />

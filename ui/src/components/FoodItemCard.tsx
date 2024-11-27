@@ -3,13 +3,14 @@ import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from 'tiny-invariant';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 
 interface FoodItemCardProps {
     item: { item_id: string, item_name: string, item_brand: string }
     onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
+    removeStagedItem: Function
 }
 
 const containerDimensions = {
@@ -17,9 +18,10 @@ const containerDimensions = {
     width: '120px',
 }
 
-export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceContainer }) => {
+export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceContainer, removeStagedItem }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [isInEditMode, setIsInEditMode] = useState<boolean>(false)
     const theme = useTheme();
 
     useEffect(() => {
@@ -60,9 +62,14 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
         )
     }, [item]);
 
+    const handleClick = () => {
+        setIsInEditMode(!isInEditMode);
+    };
+
     return (
         <Box
             ref={ref}
+            onDoubleClick={handleClick}
             sx={{
                 height: containerDimensions.height,
                 width: containerDimensions.width,
@@ -79,8 +86,24 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                opacity: isInEditMode ? 0.5 : 1,
             }}
         >
+            {isInEditMode && (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => removeStagedItem(item)}
+                    sx={{
+                        position: "absolute",
+                        zIndex: 12,
+                        color: 'black',
+                        fontSize: '10px',
+                    }}
+                >
+                    Remove
+                </Button>
+            )}
             {item.item_brand} - {item.item_name}
         </Box>
     );
