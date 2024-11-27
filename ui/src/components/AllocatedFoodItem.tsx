@@ -103,7 +103,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         const absoluteY = newY
 
         const newPosition = { x: position.x, y: absoluteY }
-        console.log('newposition', newPosition)
         setPosition(() => (newPosition));
         if (keydown) return
 

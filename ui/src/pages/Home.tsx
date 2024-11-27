@@ -25,8 +25,8 @@ export const Home = () => {
                 <Button onClick={toggleDrawer(true)}>Search for Items</Button>
                 <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)} anchor='right' PaperProps={{
                     sx: {
-                        width: "40vw",
-                        maxWidth: "40vw",
+                        width: "50vw",
+                        maxWidth: "50vw",
                         height: "100vh",
                     },
                 }}>

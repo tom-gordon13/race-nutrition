@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Input } from '@mui/material';
+import { FoodSearchResult } from './FoodSearchResult';
+import { Box, Button, Container, Grid, Input } from '@mui/material';
 import { fetchItem } from '../services/get-item';
 
 interface FoodSearchContainerProps {
@@ -10,12 +11,13 @@ interface FoodSearchContainerProps {
 
 export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ }) => {
     const [inputValue, setInputValue] = useState<string>('')
+    const [searchResults, setSearchResults] = useState<object[]>([])
 
 
     const handleSearch = () => {
         const fetchData = async () => {
             const values = await fetchItem(inputValue)
-            console.log(values)
+            setSearchResults(values)
         }
         fetchData()
     };
@@ -32,6 +34,18 @@ export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ }) => 
                 placeholder="Enter item"
             />{'   '}
             <Button variant='contained' onClick={handleSearch}>Search</Button>
+            <br />
+            <Grid container
+                columnSpacing={3}
+                rowSpacing={12}
+                sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}
+            >
+                {searchResults.map((item, index) =>
+                (<Grid item xs={2.5} key={index}>
+                    <FoodSearchResult item={item} />
+                </Grid>)
+                )}
+            </Grid>
         </Box>
     );
 }

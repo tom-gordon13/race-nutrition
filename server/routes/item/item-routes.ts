@@ -21,8 +21,6 @@ router.get("/", async (req: Request, res: Response) => {
         console.error('Error fetching item: ', error)
         res.status(400).json({ message: 'An error occurred' })
     }
-
-
 });
 
 export default router;
