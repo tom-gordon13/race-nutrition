@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Drawer, Button } from '@mui/material';
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
@@ -8,6 +8,7 @@ import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearchContainer';
 import { postNutrients } from '../services/post-nutrient-to-redis';
+import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
 
 const raceDurationSample = 10
 
@@ -31,6 +32,14 @@ export const Home = () => {
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
     };
+
+    useEffect(() => {
+        const fetchNutrients = async () => {
+            await calculateTotalNutrition(allocatedItems)
+        }
+        console.log('allocatedItems', allocatedItems)
+        fetchNutrients()
+    }, [allocatedItems])
 
     const addToStagedItems = (item: searchedItem) => {
         const newItem = {

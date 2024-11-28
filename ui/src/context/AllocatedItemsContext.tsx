@@ -16,7 +16,6 @@ export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = (
     const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
         const newInstanceId = allocatedItems.length + 1
         setAllocatedItems((prev) => [...prev, { item_id: itemId, instance_id: newInstanceId, x, y, item_name }]);
-        console.log({ item_id: itemId, instance_id: newInstanceId, x, y, item_name })
     };
 
     const removeAllocatedItem = (instance_id: number) => {
