@@ -37,7 +37,6 @@ export const Home = () => {
         const fetchNutrients = async () => {
             await calculateTotalNutrition(allocatedItems)
         }
-        console.log('allocatedItems', allocatedItems)
         fetchNutrients()
     }, [allocatedItems])
 
