@@ -2,12 +2,12 @@ import React from 'react';
 import { Box } from '@mui/material';
 
 interface NutritionInfoContainerProps {
-
+    totalNutrition: Record<string, number>;
 }
 
 
 
-export const NutritionInfoContainer: React.FC<NutritionInfoContainerProps> = ({ }) => {
+export const NutritionInfoContainer: React.FC<NutritionInfoContainerProps> = ({ totalNutrition }) => {
 
     return (
         <Box sx={{
@@ -19,7 +19,11 @@ export const NutritionInfoContainer: React.FC<NutritionInfoContainerProps> = ({ 
             display: 'flex',
             flexDirection: 'row'
         }}>
-            Nutrition Info
+            {Object.entries(totalNutrition).map(([nutrient, value]) => (
+                <h2 key={nutrient}>
+                    {nutrient}: {value}
+                </h2>
+            ))}
 
 
         </Box>

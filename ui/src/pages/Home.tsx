@@ -28,6 +28,7 @@ export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
+    const [totalNutrition, setTotalNutrition] = useState<Record<string, number>>({})
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
@@ -35,7 +36,8 @@ export const Home = () => {
 
     useEffect(() => {
         const fetchNutrients = async () => {
-            await calculateTotalNutrition(allocatedItems)
+            const nutrientSet = await calculateTotalNutrition(allocatedItems)
+            setTotalNutrition(nutrientSet)
         }
         fetchNutrients()
     }, [allocatedItems])
@@ -77,7 +79,7 @@ export const Home = () => {
                         <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} />
                     </Grid>
                     <Grid item xs={4}>
-                        <NutritionInfoContainer />
+                        <NutritionInfoContainer totalNutrition={totalNutrition} />
                     </Grid>
                 </Grid>
 

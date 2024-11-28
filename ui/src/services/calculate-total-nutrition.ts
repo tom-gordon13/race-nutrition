@@ -1,3 +1,4 @@
+import { create } from "domain";
 import { AllocatedItem } from "../interfaces/AllocatedItem";
 import { getNutrients } from "./get-nutrients-from-redis";
 
@@ -20,5 +21,24 @@ export const calculateTotalNutrition = async (allocatedItems: AllocatedItem[]) =
         }
     });
 
-    return totalNutrients;
+    const nutrientSet = createNutrientSet(totalNutrients)
+    return nutrientSet;
 };
+
+const createNutrientSet = (nutrientsArray: any[]) => {
+    const nutrientSet: Record<string, number> = {} = {}
+
+    nutrientsArray.forEach((item) => {
+        item.forEach((nutrient: any) => {
+            const { nutrientName, value } = nutrient;
+
+            if (!nutrientSet[nutrientName]) {
+                nutrientSet[nutrientName] = 0;
+            }
+
+            nutrientSet[nutrientName] += value;
+        });
+    });
+
+    return nutrientSet
+}
