@@ -13,7 +13,7 @@ export const NavMain = () => {
             alignContent: 'center',
             marginBottom: '1rem'
         }}>
-            NavMain
+            Race Nutrition
         </Box>
     );
 }

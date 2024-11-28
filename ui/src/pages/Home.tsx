@@ -28,7 +28,7 @@ export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
-    const [totalNutrition, setTotalNutrition] = useState<Record<string, number>>({})
+    const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);

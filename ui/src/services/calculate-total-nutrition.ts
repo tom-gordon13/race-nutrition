@@ -22,23 +22,24 @@ export const calculateTotalNutrition = async (allocatedItems: AllocatedItem[]) =
     });
 
     const nutrientSet = createNutrientSet(totalNutrients)
+    console.log(nutrientSet)
     return nutrientSet;
 };
 
 const createNutrientSet = (nutrientsArray: any[]) => {
-    const nutrientSet: Record<string, number> = {} = {}
+    const nutrientSet: Record<string, { totalValue: number; unitName: string }> = {};
 
     nutrientsArray.forEach((item) => {
         item.forEach((nutrient: any) => {
-            const { nutrientName, value } = nutrient;
+            const { nutrientName, value, unitName } = nutrient;
 
             if (!nutrientSet[nutrientName]) {
-                nutrientSet[nutrientName] = 0;
+                nutrientSet[nutrientName] = { totalValue: 0, unitName };
             }
 
-            nutrientSet[nutrientName] += value;
+            nutrientSet[nutrientName].totalValue += value;
         });
     });
 
-    return nutrientSet
-}
+    return nutrientSet;
+};
