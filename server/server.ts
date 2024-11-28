@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import redisClient from "./redis/redis-client";
 import { itemRoutes } from "./routes/item";
+import { nutritionRoutes } from "./routes/nutrition";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/item", itemRoutes);
+app.use("/nutrition", nutritionRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error("Error:", err);

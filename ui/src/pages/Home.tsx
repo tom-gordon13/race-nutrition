@@ -7,6 +7,7 @@ import { AllocatedItem } from '../interfaces/AllocatedItem'
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearchContainer';
+import { postNutrients } from '../services/post-nutrient-to-redis';
 
 const raceDurationSample = 10
 
@@ -38,14 +39,13 @@ export const Home = () => {
             item_brand: item?.brandName || ''
         }
 
+        postNutrients(item)
+
         setStagedItems([...stagedItems, newItem])
     }
 
     const removeStagedItem = (item: StagedItem) => {
-        console.log(item)
         const newStageditems = stagedItems.filter((stagedItem) => item.item_id !== stagedItem.item_id)
-        console.log(stagedItems)
-        console.log(newStageditems)
         setStagedItems([...newStageditems])
     }
 
