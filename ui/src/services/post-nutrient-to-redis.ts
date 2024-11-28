@@ -9,7 +9,7 @@ export const postNutrients = async (item: any) => {
     const itemToPost = { fdcId, foodNutrients, brandName, brandOwner, description }
     try {
         const response = await axios.post(`http://localhost:${API_PORT}/nutrition`, {
-            body: itemToPost,
+            itemToPost,
         });
 
         console.log('nutrients posted')

@@ -7,31 +7,45 @@ dotenv.config();
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-    const { id, foodNutrients, brandName, brandOwner, description } = req.body;
-
-    console.log(id, foodNutrients)
-
+    const { fdcId, foodNutrients, brandName, brandOwner, description } = req.body.itemToPost;
     try {
-        // // Save the item to Redis as a hash
-        // await redisClient.hSet(`item:${id}`, { id, name, price });
+        const serializedFoodNutrients = JSON.stringify(foodNutrients);
+        await redisClient.hSet(`nutrition:${fdcId}`, { fdcId, foodNutrients: serializedFoodNutrients, brandName: brandName || 'N/A', brandOwner, description });
 
-        // // Set a TTL of 1 hour for the item
-        // await redisClient.expire(`item:${id}`, 3600);
+        await redisClient.expire(`nutrition:${fdcId}`, 3600);
 
-        // console.log(`Item with ID ${id} written to Redis`);
-        // res.status(201).json({ message: "Item successfully written to Redis" });
-        console.log("Item written to Redis");
+        console.log(`Nutrition for item with ID ${fdcId} written to Redis`);
+        res.status(201).json({ message: "Item successfully written to Redis" });
+        console.log("Nutrition for item written to Redis");
     } catch (err) {
-        console.error("Failed to write to Redis:", err);
+        console.error("Failed to write nutrition to Redis:", err);
     }
 });
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/:fdcId", async (req: Request, res: Response) => {
     try {
-        const item = await redisClient.hGetAll("item:123");
-        console.log("Retrieved hash:", item);
+        const { fdcId } = req.params;
+
+        if (!fdcId) {
+            return res.status(400).json({ error: "Missing required query parameter: fdcId" });
+        }
+
+        const nutrition = await redisClient.hGetAll(`nutrition:${fdcId}`);
+
+        if (Object.keys(nutrition).length === 0) {
+            return res.status(404).json({ error: `No nutrition data found for fdcId: ${fdcId}` });
+        }
+
+        if (nutrition.foodNutrients) {
+            nutrition.foodNutrients = JSON.parse(nutrition.foodNutrients);
+        }
+
+        console.log("Retrieved hash:", nutrition);
+
+        res.status(200).json(nutrition);
     } catch (err) {
-        console.error("Failed to write to Redis:", err);
+        console.error("Failed to retrieve nutrition from Redis:", err);
+        res.status(500).json({ error: "Failed to retrieve nutrition from Redis" });
     }
 });
 

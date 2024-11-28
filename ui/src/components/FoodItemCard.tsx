@@ -5,6 +5,7 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from 'tiny-invariant';
 import { Box, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { getNutrients } from '../services/get-nutrients-from-redis';
 
 
 interface FoodItemCardProps {
@@ -62,16 +63,15 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
         )
     }, [item]);
 
-    const handleClick = () => {
+    const handleDoubleClick = () => {
         setIsInEditMode(!isInEditMode);
     };
 
     return (
         <Box
             ref={ref}
-            onDoubleClick={handleClick}
+            onDoubleClick={handleDoubleClick}
             sx={{
-                height: containerDimensions.height,
                 width: containerDimensions.width,
                 padding: '0.5rem',
                 bgcolor: isDragging ? "rgba(211, 211, 211, 0.5)" : theme.palette.primary.main,
