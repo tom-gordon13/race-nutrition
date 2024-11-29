@@ -23,7 +23,29 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const calculateHourlyNutrition = async (allocatedItem: AllocatedItem, assignedHour: number) => {
         const nutrients = await getNutrients(allocatedItem.item_id);
-    }
+
+        if (!hourlyNutrition[assignedHour]) {
+            hourlyNutrition[assignedHour] = {};
+        }
+
+        const hourlyNutritionObject = hourlyNutrition[assignedHour];
+
+        nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
+            const { nutrientName, value, unitName } = nutrient;
+
+            if (hourlyNutritionObject[nutrientName]) {
+                hourlyNutritionObject[nutrientName].volume += value;
+            } else {
+                hourlyNutritionObject[nutrientName] = {
+                    volume: value,
+                    unit: unitName,
+                };
+            }
+        });
+
+        console.log(`Updated hourly nutrition for hour ${assignedHour}:`, hourlyNutritionObject);
+    };
+
 
     return (
         <NutritionContext.Provider value={{ calculateHourlyNutrition }}>
