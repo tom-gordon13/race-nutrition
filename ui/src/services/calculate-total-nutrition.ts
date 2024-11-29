@@ -22,7 +22,6 @@ export const calculateTotalNutrition = async (allocatedItems: AllocatedItem[]) =
     });
 
     const nutrientSet = createNutrientSet(totalNutrients)
-    console.log(nutrientSet)
     return nutrientSet;
 };
 

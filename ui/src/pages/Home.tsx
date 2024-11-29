@@ -92,26 +92,30 @@ export const Home = () => {
                         id="panel1-header"
                         sx={{
                             width: '90rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2rem',
                         }}
                     >
                         <Typography>Hourly Nutrition Info</Typography>
-                        {[...Array(lineCount)].map((_, index) => (
-                            (index !== lineCount - 1) ?
-                                <div style={{
-                                    position: 'absolute',
-                                    left: `${(index * 100) / (lineCount - 1)}%`,
-                                    width: `${100 / lineCount}%`,
-                                }}>
-                                    <h3 style={{
-
-                                        // bottom: containerRef?.current?.clientHeight || '400px',
-                                        fontSize: '20px',
-                                        // backgroundColor: 'red',
-                                        borderBottom: '2px black solid'
-                                    }}>{index + 1}</h3>
-                                </div> : null
-                        ))}
-
+                        <div style={{
+                            marginTop: '20px'
+                        }}>
+                            {[...Array(lineCount)].map((_, index) => (
+                                (index !== lineCount - 1) ?
+                                    <div style={{
+                                        position: 'absolute',
+                                        left: `${(index * 100) / (lineCount - 1)}%`,
+                                        width: `${100 / lineCount}%`,
+                                    }}>
+                                        <h3
+                                            style={{
+                                                fontSize: '20px',
+                                                borderBottom: '2px black solid'
+                                            }}>{index + 1}</h3>
+                                    </div> : null
+                            ))}
+                        </div>
                     </AccordionSummary>
                     <AccordionDetails
                         sx={{

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { AllocatedItem } from '../interfaces/AllocatedItem'
 
 interface AllocatedItemsContextProps {
@@ -12,6 +12,10 @@ const AllocatedItemsContext = createContext<AllocatedItemsContextProps | undefin
 
 export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
+
+    useEffect(() => {
+        console.log(allocatedItems)
+    }, [allocatedItems])
 
     const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
         const newInstanceId = allocatedItems.length + 1

@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Box, Button } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { useNutrition } from '../context/NutritionContext';
 import { useEventContext } from '../context/EventContext';
 import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import invariant from 'tiny-invariant';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { useTheme } from '@mui/material/styles';
-import { floatToHoursAndMinutes, getOneMinuteStepSize } from '../utils/float-to-time'
+import { floatToHours, floatToHoursAndMinutes, getOneMinuteStepSize } from '../utils/float-to-time'
 
 
 interface FoodItemContainerProps {
@@ -43,6 +44,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [hasResolved, setHasResolved] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
+    const { calculateHourlyNutrition } = useNutrition()
     const { eventDuration } = useEventContext()
 
     const theme = useTheme();
@@ -50,6 +52,10 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const raceContainerRect = raceContainer.getBoundingClientRect()
     const containerWidth = raceContainerRect.width
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
+
+    useEffect(() => {
+        calculateHourlyNutrition(item, floatToHours(position.x / containerWidth * eventDuration))
+    }, [])
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         const horizontalOverlap = rect1.right <= rect2.left || rect1.left >= rect2.right
@@ -151,7 +157,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 getInitialData: () => ({ item }),
                 onDragStart: ({ source }) => {
                     setIsDragging(true)
-                    console.log('item', source.data)
                 },
                 onDrop: () => {
                     setIsDragging(false)
