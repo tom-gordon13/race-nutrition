@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Drawer, Button } from '@mui/material';
+import { Box, Grid, Drawer, Button, Accordion, AccordionSummary, Typography, AccordionDetails } from '@mui/material';
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
@@ -9,6 +9,7 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearchContainer';
 import { postNutrients } from '../services/post-nutrient-to-redis';
 import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
+// import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const raceDurationSample = 10
 
@@ -29,6 +30,8 @@ export const Home = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
     const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
+
+    const lineCount = raceDurationSample + 1;
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
@@ -82,10 +85,67 @@ export const Home = () => {
                         <NutritionInfoContainer totalNutrition={totalNutrition} />
                     </Grid>
                 </Grid>
+                <Accordion>
+                    <AccordionSummary
+                        // expandIcon={<ArrowDownwardIcon />}
+                        aria-controls="panel1-content"
+                        id="panel1-header"
+                        sx={{
+                            width: '90rem',
+                        }}
+                    >
+                        <Typography>Hourly Nutrition Info</Typography>
+                        {[...Array(lineCount)].map((_, index) => (
+                            (index !== lineCount - 1) ?
+                                <div style={{
+                                    position: 'absolute',
+                                    left: `${(index * 100) / (lineCount - 1)}%`,
+                                    width: `${100 / lineCount}%`,
+                                }}>
+                                    <h3 style={{
 
+                                        // bottom: containerRef?.current?.clientHeight || '400px',
+                                        fontSize: '20px',
+                                        // backgroundColor: 'red',
+                                        borderBottom: '2px black solid'
+                                    }}>{index + 1}</h3>
+                                </div> : null
+                        ))}
+
+                    </AccordionSummary>
+                    <AccordionDetails
+                        sx={{
+                            height: "300px",
+                            maxHeight: "300px",
+                            overflow: "auto",
+                        }}>
+                        {[...Array(lineCount)].map((_, index) => (
+                            (index !== lineCount - 1) ?
+                                <div style={{
+                                    position: 'absolute',
+                                    left: `${(index * 100) / (lineCount - 1)}%`,
+                                    width: `${100 / lineCount}%`,
+                                }}>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                    <div>test</div>
+                                </div> : null
+                        ))}
+                        {/* <Typography>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                        </Typography> */}
+                    </AccordionDetails>
+                </Accordion>
                 <RaceContainerTop raceDuration={raceDurationSample} />
 
-            </Box>
+            </Box >
         </>
     );
 }

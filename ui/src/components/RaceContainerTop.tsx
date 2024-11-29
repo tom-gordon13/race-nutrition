@@ -182,12 +182,12 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             {[...Array(lineCount)].map((_, index) => (
                 (index !== 0 && index !== lineCount - 1) ?
                     <div>
-                        <h3 style={{
+                        {/* <h3 style={{
                             position: 'absolute',
                             left: `${(index * 100) / (lineCount - 1)}%`,
                             bottom: containerRef?.current?.clientHeight || '400px',
                             fontSize: '20px'
-                        }}>{index}</h3>
+                        }}>{index}</h3> */}
                         < Box
                             key={index}
                             sx={{

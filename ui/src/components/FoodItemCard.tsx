@@ -15,7 +15,7 @@ interface FoodItemCardProps {
 }
 
 const containerDimensions = {
-    height: '70px',
+    height: '100px',
     width: '120px',
 }
 
@@ -72,6 +72,7 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
             ref={ref}
             onDoubleClick={handleDoubleClick}
             sx={{
+                height: containerDimensions.height,
                 width: containerDimensions.width,
                 padding: '0.5rem',
                 bgcolor: isDragging ? "rgba(211, 211, 211, 0.5)" : theme.palette.primary.main,
