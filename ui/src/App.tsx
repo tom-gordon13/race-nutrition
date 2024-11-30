@@ -13,17 +13,17 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
-        <NutritionProvider>
-          <EventContextProvider>
-            <AllocatedItemsProvider>
+        <AllocatedItemsProvider>
+          <NutritionProvider>
+            <EventContextProvider>
               <Router>
                 <Routes>
                   <Route path="/" element={<Home />} />
                 </Routes>
               </Router>
-            </AllocatedItemsProvider>
-          </EventContextProvider>
-        </NutritionProvider>
+            </EventContextProvider>
+          </NutritionProvider>
+        </AllocatedItemsProvider>
       </ThemeProvider>
     </div>
   );

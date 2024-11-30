@@ -12,7 +12,6 @@ export const postNutrients = async (item: any) => {
             itemToPost,
         });
 
-        console.log('nutrients posted')
     } catch (error: any) {
         console.error('Error fetching item: ', error)
     }

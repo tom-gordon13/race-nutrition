@@ -54,8 +54,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
     useEffect(() => {
-        calculateHourlyNutrition(item, floatToHours(position.x / containerWidth * eventDuration))
-    }, [])
+        // calculateHourlyNutrition(item.item_id, floatToHours(position.x / containerWidth * eventDuration) + 1)
+    }, [position])
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         const horizontalOverlap = rect1.right <= rect2.left || rect1.left >= rect2.right
@@ -97,7 +97,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                     newY + raceContainerRect.y
                 );
                 if (checkOverlap(simulatedRect, otherRect)) {
-                    console.log('overlap!')
                     newY += 750;
                     overlapping = true;
                     break;
@@ -144,8 +143,11 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                         allowedEdges: ["top", "bottom"],
                     });
                 },
-                getIsSticky: () => true, // To make a drop target "sticky"
-                onDrop: () => { resolveOverlapOnDrop() },
+                getIsSticky: () => true,
+                onDrop: () => {
+                    resolveOverlapOnDrop()
+                    // calculateHourlyNutrition(item.item_id, floatToHours(position.x / containerWidth * eventDuration) + 1)
+                },
                 onDragEnter: (args) => {
                     // if (args.source.data.cardId !== item.itemId) {
                     //     console.log("onDragEnter", args);

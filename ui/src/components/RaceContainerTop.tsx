@@ -8,6 +8,9 @@ import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clos
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
 import { useTheme } from '@mui/material/styles';
+import { useNutrition } from '../context/NutritionContext';
+import { useEventContext } from '../context/EventContext';
+import { floatToHours } from '../utils/float-to-time';
 
 
 interface RaceContainerTopProps {
@@ -47,6 +50,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+    const { removeFromHourlyNutrition, calculateHourlyNutrition } = useNutrition()
+    const { eventDuration } = useEventContext()
+
 
     const theme = useTheme();
 
@@ -107,6 +113,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             getIsSticky: () => true,
             onDragStart: ({ source, location }) => {
                 setIsDraggedOver(true)
+                const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
+                // removeFromHourlyNutrition(itemData.item_id, 1)
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {
@@ -127,9 +135,12 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             },
             onDrop: ({ source, location }) => {
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
+                // removeFromHourlyNutrition(itemData.item_id, floatToHours(itemData.x / containerWidth * eventDuration) + 1)
                 const adjustedCoordinates = adjustCoordinates(location.current.input.clientX, location.current.input.clientY, itemData.instance_id as number)
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 if (isValidDrop) {
+                    invariant(containerRef?.current);
+                    calculateHourlyNutrition(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1)
                     const isUpdate = !!itemData.instance_id
                     const newInstanceId = allocatedItems.length + 1
                     const newItem = { item_id: itemData.item_id, instance_id: isUpdate ? itemData.instance_id || 0 : newInstanceId, item_name: itemData.item_name, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
@@ -138,7 +149,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                     if (isValidDrop && isUpdate) newAllocatedItems = [...allocatedItems.filter((item) => item.instance_id !== itemData.instance_id), { ...newItem }];
                     setAllocatedItems([...newAllocatedItems])
                 }
-
                 setIsDraggedOver(false)
             },
         });

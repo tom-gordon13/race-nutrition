@@ -13,10 +13,6 @@ const AllocatedItemsContext = createContext<AllocatedItemsContextProps | undefin
 export const AllocatedItemsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [allocatedItems, setAllocatedItems] = useState<AllocatedItem[]>([]);
 
-    useEffect(() => {
-        console.log(allocatedItems)
-    }, [allocatedItems])
-
     const handleDropInRaceContainer = (itemId: string, x: number, y: number, item_name: string) => {
         const newInstanceId = allocatedItems.length + 1
         setAllocatedItems((prev) => [...prev, { item_id: itemId, instance_id: newInstanceId, x, y, item_name }]);

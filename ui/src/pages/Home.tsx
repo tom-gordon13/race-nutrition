@@ -9,6 +9,7 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearchContainer';
 import { postNutrients } from '../services/post-nutrient-to-redis';
 import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
+import { HourlyNutritionContainer } from '../components/HourlyNutritionContainer';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const raceDurationSample = 10
@@ -130,15 +131,7 @@ export const Home = () => {
                                     left: `${(index * 100) / (lineCount - 1)}%`,
                                     width: `${100 / lineCount}%`,
                                 }}>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
-                                    <div>test</div>
+                                    <HourlyNutritionContainer hourNumber={index + 1} />
                                 </div> : null
                         ))}
                         {/* <Typography>
