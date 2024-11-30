@@ -50,7 +50,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
-    const { removeFromHourlyNutrition, calculateHourlyNutrition } = useNutrition()
+    const { removeFromHourlyNutrition, calculateHourlyNutrition, addItemToHourly } = useNutrition()
     const { eventDuration } = useEventContext()
 
 
@@ -113,8 +113,10 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             getIsSticky: () => true,
             onDragStart: ({ source, location }) => {
                 setIsDraggedOver(true)
-                const itemData: { item_id: string, item_name: string, instance_id: number | undefined } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined }
-                // removeFromHourlyNutrition(itemData.item_id, 1)
+                invariant(containerRef?.current);
+                const itemData: { item_id: string, item_name: string, instance_id: number | undefined, x: number } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined, x: number }
+                removeFromHourlyNutrition(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
+                addItemToHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {
@@ -130,7 +132,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             onDragEnter: () => {
                 if (isValid) setIsDraggedOver(true)
             },
-            onDragLeave: () => {
+            onDragLeave: ({ source }) => {
                 setIsDraggedOver(false)
             },
             onDrop: ({ source, location }) => {

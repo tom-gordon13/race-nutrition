@@ -14,15 +14,15 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <AllocatedItemsProvider>
-          <NutritionProvider>
-            <EventContextProvider>
+          <EventContextProvider>
+            <NutritionProvider>
               <Router>
                 <Routes>
                   <Route path="/" element={<Home />} />
                 </Routes>
               </Router>
-            </EventContextProvider>
-          </NutritionProvider>
+            </NutritionProvider>
+          </EventContextProvider>
         </AllocatedItemsProvider>
       </ThemeProvider>
     </div>

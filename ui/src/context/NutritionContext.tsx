@@ -2,11 +2,13 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { getNutrients } from '../services/get-nutrients-from-redis';
 import { useAllocatedItems } from './AllocatedItemsContext';
+import { useEventContext } from './EventContext';
 
 interface NutritionContextProps {
     calculateHourlyNutrition: (itemId: string, assignedHour: number) => void;
     hourlyNutrition: HourlyNutrition
     removeFromHourlyNutrition: (itemId: string, hour: number) => void
+    addItemToHourly: (itemId: string, hour: number) => void
 }
 
 interface NutritionValue {
@@ -22,61 +24,85 @@ interface HourlyNutrition {
     [hour: number]: SingleHourNutrition;
 }
 
+type HourlyItems = string[];
+
 
 const NutritionContext = createContext<NutritionContextProps | undefined>(undefined);
 
 export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [hourlyNutrition, setHourlyNutrition] = useState<HourlyNutrition>({})
+    const { eventDuration } = useEventContext()
+    const [fullEventItems, setFullEventItems] = useState<HourlyItems[]>([])
     const { allocatedItems } = useAllocatedItems()
+
+    useEffect(() => {
+        if (eventDuration) {
+            // Initialize fullEventItems as an array of empty arrays
+            const initializedItems = Array.from({ length: eventDuration }, () => []);
+            setFullEventItems(initializedItems);
+        }
+    }, [eventDuration]);
+
+
+    const addItemToHourly = (itemId: string, hour: number) => {
+        const fullyEventItemsCopy = [...fullEventItems]
+        fullyEventItemsCopy[hour] = [...fullyEventItemsCopy[hour], itemId]
+        console.log([...fullyEventItemsCopy])
+
+        setFullEventItems([...fullyEventItemsCopy])
+    }
 
     const calculateHourlyNutrition = async (itemId: string, assignedHour: number) => {
         const nutrients = await getNutrients(itemId);
 
-        if (!hourlyNutrition[assignedHour]) {
-            hourlyNutrition[assignedHour] = {};
-        }
+        setHourlyNutrition((prevHourlyNutrition) => {
+            const updatedHourlyNutrition = { ...prevHourlyNutrition };
 
-        const hourlyNutritionObject = hourlyNutrition[assignedHour];
-
-        nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
-            const { nutrientName, value, unitName } = nutrient;
-
-            if (hourlyNutritionObject[nutrientName]) {
-                hourlyNutritionObject[nutrientName].volume += value;
-            } else {
-                hourlyNutritionObject[nutrientName] = {
-                    volume: value,
-                    unit: unitName,
-                };
+            if (!updatedHourlyNutrition[assignedHour]) {
+                updatedHourlyNutrition[assignedHour] = {};
             }
+
+            const hourlyNutritionObject = { ...updatedHourlyNutrition[assignedHour] };
+
+            nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
+                const { nutrientName, value, unitName } = nutrient;
+
+                if (hourlyNutritionObject[nutrientName]) {
+                    hourlyNutritionObject[nutrientName].volume += value;
+                } else {
+                    hourlyNutritionObject[nutrientName] = {
+                        volume: value,
+                        unit: unitName,
+                    };
+                }
+            });
+
+            updatedHourlyNutrition[assignedHour] = hourlyNutritionObject;
+            return updatedHourlyNutrition;
         });
-        setHourlyNutrition({ ...hourlyNutrition, [assignedHour]: hourlyNutritionObject })
-        console.log(assignedHour)
     };
 
     const removeFromHourlyNutrition = async (itemId: string, hour: number) => {
-        const nutrients = await getNutrients(itemId);
+        if (!hourlyNutrition[hour]) {
+            console.error(`Hour ${hour} does not exist in hourlyNutrition.`);
+            return;
+        }
 
+        const nutrients = await getNutrients(itemId);
         const hourlyNutritionObject = hourlyNutrition[hour];
 
+        console.log(hour, hourlyNutrition)
         nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
             const { nutrientName, value, unitName } = nutrient;
 
-            if (hourlyNutritionObject[nutrientName]) {
-                hourlyNutritionObject[nutrientName].volume -= value;
-            } else {
-                hourlyNutritionObject[nutrientName] = {
-                    volume: value,
-                    unit: unitName,
-                };
-            }
+            hourlyNutritionObject[nutrientName].volume -= value;
         });
         setHourlyNutrition({ ...hourlyNutrition, [hour]: hourlyNutritionObject })
     }
 
 
     return (
-        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition }}>
+        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition, addItemToHourly }}>
             {children}
         </NutritionContext.Provider>
     );
