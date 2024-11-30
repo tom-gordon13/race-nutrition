@@ -146,7 +146,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 getIsSticky: () => true,
                 onDrop: () => {
                     resolveOverlapOnDrop()
-                    // calculateHourlyNutrition(item.item_id, floatToHours(position.x / containerWidth * eventDuration) + 1)
                 },
                 onDragEnter: (args) => {
                     // if (args.source.data.cardId !== item.itemId) {

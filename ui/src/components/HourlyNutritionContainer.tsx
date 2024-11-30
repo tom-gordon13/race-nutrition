@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SingleHourNutrition, useNutrition } from '../context/NutritionContext';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
+import { nutrientMapping } from '../reference/nutrient-mapping'
 
 
 interface HourlyNutritionContainerProps {
@@ -27,7 +28,7 @@ export const HourlyNutritionContainer: React.FC<HourlyNutritionContainerProps> =
                             fontSize: '12px',
                             marginBottom: 0
                         }}>
-                            <strong>{key}</strong>: {value.volume} {value.unit}
+                            <strong>{nutrientMapping[key] || key}</strong>: {Number(value.volume).toFixed(1)} {value.unit}
                         </Typography>
                     </Box>
                 ))
