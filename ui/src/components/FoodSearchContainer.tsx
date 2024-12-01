@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FoodSearchResult } from './FoodSearchResult';
 import { Box, Button, Container, Grid, Input } from '@mui/material';
 import { fetchItem } from '../services/get-item';
@@ -12,16 +12,22 @@ interface FoodSearchContainerProps {
 export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToStagedItems }) => {
     const [inputValue, setInputValue] = useState<string>('')
     const [searchResults, setSearchResults] = useState<object[]>([])
+    const [pageError, setPageError] = useState<boolean>(false)
 
 
     const handleSearch = () => {
         const fetchData = async () => {
-            const values = await fetchItem(inputValue)
-            setSearchResults(values)
+            setPageError(false)
+            try {
+                const values = await fetchItem(inputValue)
+                if (!values) throw new Error
+                setSearchResults(values)
+            } catch {
+                setPageError(true)
+            }
         }
         fetchData()
     };
-
 
     return (
         <Box sx={{
@@ -35,7 +41,16 @@ export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToS
             />{'   '}
             <Button variant='contained' onClick={handleSearch}>Search</Button>
             <br />
-            <Grid container
+            {pageError && <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '20rem',
+            }}>
+                <h3>Unable to fetch results</h3>
+            </Box>}
+            {!pageError && <Grid container
                 columnSpacing={3}
                 rowSpacing={12}
                 sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: 0 }}
@@ -45,7 +60,9 @@ export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToS
                     <FoodSearchResult item={item} addToStagedItems={addToStagedItems} />
                 </Grid>)
                 )}
-            </Grid>
+
+
+            </Grid>}
         </Box>
     );
 }
