@@ -45,7 +45,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
             justifyContent: 'start',
             gap: '1%',
             borderRadius: 2,
-            boxShadow: 3,
+            // boxShadow: 1,
         }}>
             {stagedItems.map((item) => (
                 <FoodItemCard

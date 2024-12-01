@@ -1,17 +1,19 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import { useTheme } from '@mui/material'
 
 
 
 
 export const NavMain = () => {
+    const theme = useTheme()
     return (
         <Box sx={{
-            height: '4rem',
+            height: '12vh',
             width: '100%',
-            border: '1px solid black',
             alignContent: 'center',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            backgroundColor: theme.palette.grey[100]
         }}>
             Race Nutrition
         </Box>
