@@ -67,7 +67,6 @@ export const Home = () => {
         <>
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
-                <Button onClick={toggleDrawer(true)}>Search for Items</Button>
                 <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)} anchor='right' PaperProps={{
                     sx: {
                         width: "50vw",
@@ -78,14 +77,24 @@ export const Home = () => {
                     <FoodSearchContainer addToStagedItems={addToStagedItems} />
                 </Drawer>
 
-                <Grid container spacing={2} alignItems="flex-start">
-                    <Grid item xs={8}>
+                <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
+                    <Grid item xs={9}>
                         <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} />
                     </Grid>
-                    <Grid item xs={4}>
-                        <NutritionInfoContainer totalNutrition={totalNutrition} />
+                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
+                        {/* <NutritionInfoContainer totalNutrition={totalNutrition} /> */}
+                        <Button onClick={toggleDrawer(true)} variant='contained'
+                            sx={{
+                                height: '40%'
+                            }}>Search for Items
+                        </Button>
+
+                        <Button onClick={() => { console.log('clear items') }} variant='contained' sx={{
+                            height: '40%'
+                        }}>Clear Items</Button>
                     </Grid>
                 </Grid>
+
                 <Accordion>
                     <AccordionSummary
                         // expandIcon={<ArrowDownwardIcon />}
