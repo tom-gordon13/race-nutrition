@@ -3,6 +3,7 @@ import { Box, Button } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { StagedItem } from '../pages/Home';
+import { useTheme } from '@mui/material/styles';
 
 const itemList = [
     {
@@ -29,19 +30,22 @@ interface StagingContainerProps {
 
 export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
+    const theme = useTheme()
 
     return (
         <Box sx={{
             height: '15rem',
             width: '100%',
-            border: '1px solid black',
+            border: `2px solid ${theme.palette.grey[300]}`,
             alignContent: 'center',
             marginBottom: '1rem',
             padding: '1rem',
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'start',
-            gap: '1%'
+            gap: '1%',
+            borderRadius: 2,
+            boxShadow: 3,
         }}>
             {stagedItems.map((item) => (
                 <FoodItemCard

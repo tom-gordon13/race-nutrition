@@ -3,7 +3,7 @@ import { Box, Grid, Drawer, Button, Accordion, AccordionSummary, Typography, Acc
 import { StagingContainer } from '../components/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
-import { AllocatedItem } from '../interfaces/AllocatedItem'
+import { useTheme } from '@mui/material/styles';
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearchContainer';
@@ -28,6 +28,7 @@ export interface searchedItem {
 
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
+    const theme = useTheme()
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
     const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
@@ -89,8 +90,8 @@ export const Home = () => {
                             }}>Search for Items
                         </Button>
 
-                        <Button onClick={() => { console.log('clear items') }} variant='contained' sx={{
-                            height: '40%'
+                        <Button onClick={() => { console.log('clear items') }} variant='outlined' sx={{
+                            height: '25%'
                         }}>Clear Items</Button>
                     </Grid>
                 </Grid>
@@ -102,9 +103,15 @@ export const Home = () => {
                         id="panel1-header"
                         sx={{
                             width: '90rem',
+                            minHeight: '80px',
+                            height: '10vh',
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
                             gap: '2rem',
+                            // backgroundColor: theme.palette.primary.light,
+                            borderRadius: 2,
+                            boxShadow: 3,
                         }}
                     >
                         <Typography>Hourly Nutrition Info</Typography>
