@@ -39,10 +39,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const [position, setPosition] = useState({ x: item.x, y: item.y });
-    const [originalPosition, setOriginalPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const [hasResolved, setHasResolved] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
     const { calculateHourlyNutrition } = useNutrition()
     const { eventDuration } = useEventContext()
@@ -187,32 +184,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
         }
     };
 
-    // const handleKeyDown = (e: KeyboardEvent) => {
-    //     if (!isInEditMode) return;
-
-    //     const containerTop = raceContainerRect?.current?.offsetTop ?? 0;
-    //     const containerLeft = raceContainerRect?.current?.offsetLeft ?? 0;
-
-    //     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-    //         setPosition((prev) => {
-    //             const newX =
-    //                 e.key === "ArrowRight"
-    //                     ? Math.min(containerWidth - margin, prev.x + stepSize)
-    //                     : Math.max(margin, prev.x - stepSize);
-
-    //             const adjustedPosition = adjustCoordinates(newX + containerLeft, prev.y + containerTop, item.instance_id);
-    //             return {
-    //                 x: adjustedPosition.x - containerLeft,
-    //                 y: adjustedPosition.y - containerTop,
-    //             };
-    //         });
-    //     }
-
-    //     if (e.key === "Enter") {
-    //         if (isInEditMode) setIsInEditMode(false);
-    //     }
-    // };
-
     useEffect(() => {
         if (isInEditMode) {
             window.addEventListener('keydown', handleKeyDown);
@@ -239,18 +210,22 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 bgcolor: !isInEditMode ? theme.palette.primary.main : theme.palette.secondary.main,
                 '&:hover': {
                     bgcolor: !isInEditMode ? theme.palette.primary.light : theme.palette.secondary.light,
+                    width: '200px'
                 },
                 cursor: isDragging ? 'grabbing' : 'grab',
                 borderRadius: 2,
                 boxShadow: 3,
                 color: 'white',
+                fontSize: '10px',
                 fontWeight: 'bold',
+                overflow: 'hidden',
             }}
             onDoubleClick={handleClick}
             data-item-id={item.instance_id}
         >
-            {/* {item.item_name} - {position.x}, {position.y} */}
-            {item.item_name} - {floatToHoursAndMinutes(position.x / containerWidth * eventDuration)}
+            {floatToHoursAndMinutes(position.x / containerWidth * eventDuration)}
+            <br />
+            {item.item_name}
             <Button
                 variant="contained"
                 color="secondary"
