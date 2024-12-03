@@ -8,6 +8,7 @@ interface NutritionContextProps {
     calculateHourlyNutrition: (itemId: string, assignedHour: number) => void;
     hourlyNutrition: HourlyNutrition
     removeFromHourlyNutrition: (itemId: string, hour: number) => void
+    removeItemFromHourly: (itemId: string, hour: number) => void
     addItemToHourly: (itemId: string, hour: number) => void
 }
 
@@ -37,17 +38,30 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     useEffect(() => {
         if (eventDuration) {
-            // Initialize fullEventItems as an array of empty arrays
             const initializedItems = Array.from({ length: eventDuration }, () => []);
             setFullEventItems(initializedItems);
         }
     }, [eventDuration]);
 
+    useEffect(() => {
+        console.log(fullEventItems)
+    }, [fullEventItems]);
+
 
     const addItemToHourly = (itemId: string, hour: number) => {
         const fullyEventItemsCopy = [...fullEventItems]
-        fullyEventItemsCopy[hour] = [...fullyEventItemsCopy[hour], itemId]
-        console.log([...fullyEventItemsCopy])
+        fullyEventItemsCopy[hour - 1] = fullyEventItemsCopy[hour - 1] ? [...fullyEventItemsCopy[hour - 1], itemId] : []
+
+        setFullEventItems([...fullyEventItemsCopy])
+    }
+
+    const removeItemFromHourly = (itemId: string, hour: number) => {
+        const fullyEventItemsCopy = [...fullEventItems]
+        const indexToRemove = fullyEventItemsCopy[hour].indexOf(itemId);
+        if (indexToRemove !== -1) {
+            fullyEventItemsCopy.splice(indexToRemove, 1);
+        }
+
 
         setFullEventItems([...fullyEventItemsCopy])
     }
@@ -102,7 +116,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 
     return (
-        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition, addItemToHourly }}>
+        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition, addItemToHourly, removeItemFromHourly }}>
             {children}
         </NutritionContext.Provider>
     );

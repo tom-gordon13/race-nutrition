@@ -50,7 +50,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const [isDraggedOver, setIsDraggedOver] = useState(false);
     const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 })
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
-    const { removeFromHourlyNutrition, calculateHourlyNutrition, addItemToHourly } = useNutrition()
+    const { removeFromHourlyNutrition, calculateHourlyNutrition, addItemToHourly, removeItemFromHourly } = useNutrition()
     const { eventDuration } = useEventContext()
 
 
@@ -115,8 +115,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 setIsDraggedOver(true)
                 invariant(containerRef?.current);
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined, x: number } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined, x: number }
-                removeFromHourlyNutrition(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
-                addItemToHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
+                // removeFromHourlyNutrition(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
+                // removeItemFromHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
+                // addItemToHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {
@@ -142,6 +143,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 if (isValidDrop) {
                     invariant(containerRef?.current);
+                    addItemToHourly(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1)
                     calculateHourlyNutrition(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1)
                     const isUpdate = !!itemData.instance_id
                     const newInstanceId = allocatedItems.length + 1
@@ -193,24 +195,17 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         >
             {[...Array(lineCount)].map((_, index) => (
                 (index !== 0 && index !== lineCount - 1) ?
-                    <div>
-                        {/* <h3 style={{
+                    < Box
+                        key={index}
+                        sx={{
                             position: 'absolute',
+                            top: 0,
+                            bottom: 0,
                             left: `${(index * 100) / (lineCount - 1)}%`,
-                            bottom: containerRef?.current?.clientHeight || '400px',
-                            fontSize: '20px'
-                        }}>{index}</h3> */}
-                        < Box
-                            key={index}
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                bottom: 0,
-                                left: `${(index * 100) / (lineCount - 1)}%`,
-                                width: '1px',
-                                bgcolor: 'white ',
-                            }}
-                        /> </div> : null
+                            width: '1px',
+                            bgcolor: 'white ',
+                        }}
+                    /> : null
             ))}
             {
                 allocatedItems.map((item) => (

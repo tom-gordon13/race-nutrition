@@ -38,11 +38,15 @@ export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ }) => {
                 }}>
                     {[...Array(lineCount)].map((_, index) => (
                         (index !== lineCount - 1) ?
-                            <div style={{
-                                position: 'absolute',
-                                left: `${(index * 100) / (lineCount - 1)}%`,
-                                width: `${100 / lineCount}%`,
-                            }}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    left: `${(index * 100) / (lineCount - 1)}%`,
+                                    width: `${100 / lineCount}%`,
+
+                                }}
+                                key={index + '_line'}
+                            >
                                 <h3
                                     style={{
                                         fontSize: '20px',
@@ -60,11 +64,14 @@ export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ }) => {
                 }}>
                 {[...Array(lineCount)].map((_, index) => (
                     (index !== lineCount - 1) ?
-                        <div style={{
-                            position: 'absolute',
-                            left: `${(index * 100) / (lineCount - 1)}%`,
-                            width: `${100 / lineCount}%`,
-                        }}>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                left: `${(index * 100) / (lineCount - 1)}%`,
+                                width: `${100 / lineCount}%`,
+                            }}
+                            key={index + '_container'}
+                        >
                             <HourlyNutritionContainer hourNumber={index + 1} />
                         </div> : null
                 ))}
