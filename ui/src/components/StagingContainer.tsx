@@ -1,25 +1,9 @@
-import React, { useContext } from 'react';
-import { Box, Button } from '@mui/material';
+import React from 'react';
+import { Box } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { StagedItem } from '../pages/Home';
 import { useTheme } from '@mui/material/styles';
-
-const itemList = [
-    {
-        item_id: '123',
-        item_name: 'Gummies'
-    },
-    {
-        item_id: '456',
-        item_name: 'Energy Bar'
-    },
-    {
-        item_id: '789',
-        item_name: 'Gel'
-    }
-]
-
 
 interface StagingContainerProps {
     stagedItems: StagedItem[]
@@ -45,7 +29,6 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
             justifyContent: 'start',
             gap: '1%',
             borderRadius: 2,
-            // boxShadow: 1,
         }}>
             {stagedItems.map((item) => (
                 <FoodItemCard

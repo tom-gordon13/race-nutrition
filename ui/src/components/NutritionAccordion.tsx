@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import { useEventContext } from '../context/EventContext';
 import { HourlyNutritionContainer } from './HourlyNutritionContainer';

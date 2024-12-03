@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SingleHourNutrition, useNutrition } from '../context/NutritionContext';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';

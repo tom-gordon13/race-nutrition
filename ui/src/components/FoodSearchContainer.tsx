@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FoodSearchResult } from './FoodSearchResult';
-import { Box, Button, Container, Grid, Input } from '@mui/material';
+import { Box, Button, Grid, Input } from '@mui/material';
 import { fetchItem } from '../services/get-item';
 
 interface FoodSearchContainerProps {

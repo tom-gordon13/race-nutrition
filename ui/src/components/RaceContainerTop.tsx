@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { AllocatedFoodItem } from './AllocatedFoodItem'
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { dropTargetForElements, monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,17 +17,6 @@ interface RaceContainerTopProps {
     raceDuration: number
 }
 
-interface DropEvent {
-    source: any;
-    location: any;
-    input: any
-}
-
-interface DragStartEvent {
-    source: any,
-    input: any
-}
-
 const containerDimensions = {
     width: '90rem',
     height: '25rem'
@@ -37,11 +26,6 @@ const allocatedItemDimensions = {
     height: '70px',
     width: '120px',
 }
-
-const remToPixels = (rem: string): number => {
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize); // Get root font size
-    return parseFloat(rem) * rootFontSize; // Convert rem to a number and multiply by root font size
-};
 
 const isValid = true
 
@@ -77,7 +61,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 if (isHorizontalOverlap && isVerticalOverlap) {
                     y += parseInt(allocatedItemDimensions.height) + 3;
                     overlapping = false;
-                    // break;
                 }
             }
         }
@@ -158,11 +141,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         });
     }, [allocatedItems]);
 
-    // useEffect(() => {
-    //     return monitorForElements({
-    //         onDrop: handleDrop
-    //     });
-    // }, []);
     const handleDragLeave = (e: any) => {
         if (e.relatedTarget === null || !e.currentTarget.contains(e.relatedTarget)) {
             setIsDraggedOver(false);
