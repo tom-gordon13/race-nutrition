@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import { useEventContext } from '../context/EventContext';
 import { HourlyNutritionContainer } from './HourlyNutritionContainer';
 
 interface NutritionAccordionProps {
-
+    isDraggingStagedItem: boolean
 }
 
-export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ }) => {
+export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ isDraggingStagedItem }) => {
     const { eventDuration } = useEventContext()
+    const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
     const lineCount = eventDuration + 1
 
+    useEffect(() => {
+        if (isDraggingStagedItem) setIsExpanded(false)
+    }, [isDraggingStagedItem])
+
     return (
 
-        <Accordion>
+        <Accordion
+            expanded={isExpanded}
+            onClick={() => setIsExpanded(!isExpanded)}
+        >
             <AccordionSummary
                 // expandIcon={<ArrowDownwardIcon />}
                 aria-controls="panel1-content"

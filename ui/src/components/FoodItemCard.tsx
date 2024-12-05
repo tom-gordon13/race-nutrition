@@ -12,6 +12,7 @@ interface FoodItemCardProps {
     item: { item_id: string, item_name: string, item_brand: string }
     onDropInRaceContainer: (itemId: string, x: number, y: number, item_name: string) => void;
     removeStagedItem: Function
+    setIsDraggingStagedItem: (isDraggingStagedItem: boolean) => void
 }
 
 const containerDimensions = {
@@ -19,7 +20,7 @@ const containerDimensions = {
     width: '120px',
 }
 
-export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceContainer, removeStagedItem }) => {
+export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceContainer, removeStagedItem, setIsDraggingStagedItem }) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false)
@@ -33,8 +34,12 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
             draggable({
                 element: foodItemElement,
                 getInitialData: () => ({ item }),
-                onDragStart: () => setIsDragging(true),
+                onDragStart: () => {
+                    setIsDraggingStagedItem(true)
+                    setIsDragging(true)
+                },
                 onDrop: () => {
+                    setIsDraggingStagedItem(false)
                     setIsDragging(false)
                 },
             }),

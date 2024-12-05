@@ -33,6 +33,7 @@ export const Home = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
     const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
+    const [isDraggingStagedItem, setIsDraggingStagedItem] = useState<boolean>(false)
 
     const lineCount = raceDurationSample + 1;
 
@@ -81,7 +82,7 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
                     <Grid item xs={9}>
-                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} />
+                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} />
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
                         {/* <NutritionInfoContainer totalNutrition={totalNutrition} /> */}
@@ -96,7 +97,7 @@ export const Home = () => {
                         }}>Clear Items</Button>
                     </Grid>
                 </Grid>
-                <NutritionAccordion />
+                <NutritionAccordion isDraggingStagedItem={isDraggingStagedItem} />
                 <RaceContainerTop raceDuration={raceDurationSample} />
 
             </Box >

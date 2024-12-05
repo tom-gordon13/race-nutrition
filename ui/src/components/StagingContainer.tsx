@@ -8,11 +8,12 @@ import { useTheme } from '@mui/material/styles';
 interface StagingContainerProps {
     stagedItems: StagedItem[]
     removeStagedItem: Function
+    setIsDraggingStagedItem: (isDraggingStagedItem: boolean) => void
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem, setIsDraggingStagedItem }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
     const theme = useTheme()
 
@@ -36,6 +37,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
                     item={item}
                     onDropInRaceContainer={handleDropInRaceContainer}
                     removeStagedItem={removeStagedItem}
+                    setIsDraggingStagedItem={setIsDraggingStagedItem}
                 />
             ))}
 
