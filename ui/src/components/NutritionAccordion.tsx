@@ -15,20 +15,24 @@ export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ isDraggi
     const lineCount = eventDuration + 1
 
     useEffect(() => {
-        const wasExpandedTemp = isExpanded ? true : false
         if (isDraggingStagedItem) {
-            setWasExpanded(isExpanded ? true : false)
-            setIsExpanded(false)
+            if (isExpanded) {
+                setWasExpanded(true);
+                setIsExpanded(false);
+            }
+        } else {
+            if (wasExpanded) {
+                setIsExpanded(true);
+                setWasExpanded(false);
+            }
         }
-        console.log(isDraggingStagedItem, wasExpandedTemp)
-        if (!isDraggingStagedItem && wasExpandedTemp) setIsExpanded(true)
-    }, [isDraggingStagedItem, isExpanded, wasExpanded])
+    }, [isDraggingStagedItem, isExpanded, wasExpanded]);
 
     return (
 
         <Accordion
             expanded={isExpanded}
-            onClick={() => setIsExpanded(!isExpanded)}
+            onChange={() => setIsExpanded(!isExpanded)}
         >
             <AccordionSummary
                 // expandIcon={<ArrowDownwardIcon />}
