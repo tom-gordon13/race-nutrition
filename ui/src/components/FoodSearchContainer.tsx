@@ -5,13 +5,14 @@ import { fetchItem } from '../services/get-item';
 
 interface FoodSearchContainerProps {
     addToStagedItems: Function
+    searchResults: object[]
+    setSearchResults: (values: object[]) => void
 }
 
 
 
-export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToStagedItems }) => {
+export const FoodSearchContainer: React.FC<FoodSearchContainerProps> = ({ addToStagedItems, searchResults, setSearchResults }) => {
     const [inputValue, setInputValue] = useState<string>('')
-    const [searchResults, setSearchResults] = useState<object[]>([])
     const [pageError, setPageError] = useState<boolean>(false)
 
 

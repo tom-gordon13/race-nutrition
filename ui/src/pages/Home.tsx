@@ -34,6 +34,7 @@ export const Home = () => {
     const [stagedItems, setStagedItems] = useState<StagedItem[]>([])
     const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
     const [isDraggingStagedItem, setIsDraggingStagedItem] = useState<boolean>(false)
+    const [searchResults, setSearchResults] = useState<object[]>([])
 
     const lineCount = raceDurationSample + 1;
 
@@ -77,7 +78,7 @@ export const Home = () => {
                         height: "100vh",
                     },
                 }}>
-                    <FoodSearchContainer addToStagedItems={addToStagedItems} />
+                    <FoodSearchContainer addToStagedItems={addToStagedItems} searchResults={searchResults} setSearchResults={setSearchResults} />
                 </Drawer>
 
                 <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
