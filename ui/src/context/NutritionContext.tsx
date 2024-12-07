@@ -7,9 +7,9 @@ import { useEventContext } from './EventContext';
 interface NutritionContextProps {
     calculateHourlyNutrition: (itemId: string, assignedHour: number) => void;
     hourlyNutrition: HourlyNutrition
-    removeFromHourlyNutrition: (itemId: string, hour: number) => void
-    removeItemFromHourly: (itemId: string, hour: number) => void
-    addItemToHourly: (itemId: string, hour: number) => void
+    removeFromHourlyNutrition: (itemId: string, hour: number, quantity?: number) => void
+    removeItemFromHourly: (itemId: string, hour: number, quantity?: number) => void
+    addItemToHourly: (itemId: string, hour: number, quantity?: number) => void
 }
 
 interface NutritionValue {
@@ -43,10 +43,6 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
     }, [eventDuration]);
 
-    useEffect(() => {
-        console.log(fullEventItems)
-    }, [fullEventItems]);
-
 
     const addItemToHourly = (itemId: string, hour: number) => {
         const fullyEventItemsCopy = [...fullEventItems]
@@ -55,7 +51,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setFullEventItems([...fullyEventItemsCopy])
     }
 
-    const removeItemFromHourly = (itemId: string, hour: number) => {
+    const removeItemFromHourly = (itemId: string, hour: number, quantity?: number) => {
         const fullyEventItemsCopy = [...fullEventItems]
         const indexToRemove = fullyEventItemsCopy[hour].indexOf(itemId);
         if (indexToRemove !== -1) {
@@ -92,27 +88,44 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             });
 
             updatedHourlyNutrition[assignedHour] = hourlyNutritionObject;
+            console.log('updated', updatedHourlyNutrition)
             return updatedHourlyNutrition;
         });
+
     };
+
+    useEffect(() => {
+        console.log('yurt', hourlyNutrition)
+    }, [hourlyNutrition])
 
     const removeFromHourlyNutrition = async (itemId: string, hour: number) => {
         if (!hourlyNutrition[hour]) {
             console.error(`Hour ${hour} does not exist in hourlyNutrition.`);
+            console.log(hourlyNutrition);
             return;
         }
 
-        const nutrients = await getNutrients(itemId);
-        const hourlyNutritionObject = hourlyNutrition[hour];
+        try {
+            const nutrients = await getNutrients(itemId);
+            const hourlyNutritionObject = { ...hourlyNutrition[hour] };
 
-        console.log(hour, hourlyNutrition)
-        nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
-            const { nutrientName, value, unitName } = nutrient;
+            nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
+                const { nutrientName, value } = nutrient;
 
-            hourlyNutritionObject[nutrientName].volume -= value;
-        });
-        setHourlyNutrition({ ...hourlyNutrition, [hour]: hourlyNutritionObject })
-    }
+                if (hourlyNutritionObject[nutrientName]) {
+                    hourlyNutritionObject[nutrientName].volume -= value;
+                }
+            });
+
+            setHourlyNutrition((prevHourlyNutrition) => ({
+                ...prevHourlyNutrition,
+                [hour]: hourlyNutritionObject,
+            }));
+        } catch (error) {
+            console.error('Error fetching nutrients:', error);
+        }
+    };
+
 
 
     return (

@@ -219,21 +219,40 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
                 fontSize: '10px',
                 fontWeight: 'bold',
                 overflow: 'hidden',
+                transition: 'width 0.3s ease',
             }}
             onDoubleClick={handleClick}
             data-item-id={item.instance_id}
         >
-            {floatToHoursAndMinutes(position.x / containerWidth * eventDuration)}
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: '4px', // Adjust to align with the box edges
+                    right: '4px',
+                    display: isInEditMode ? 'block' : 'none',
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{
+                        minWidth: '20px', // Make the button small
+                        height: '20px',
+                        padding: 0,
+                        fontSize: '12px',
+                        lineHeight: 1,
+                        borderRadius: '50%',
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                    }}
+                    onClick={() => removeAllocatedItem(item.instance_id)}
+                >
+                    X
+                </Button>
+            </Box>
+            {floatToHoursAndMinutes((position.x / containerWidth) * eventDuration)}
             <br />
             {item.item_name}
-            <Button
-                variant="contained"
-                color="secondary"
-                sx={{ marginTop: '0.5rem', display: isInEditMode ? 'block' : 'none' }}
-                onClick={() => removeAllocatedItem(item.instance_id)}
-            >
-                Remove
-            </Button>
         </Box>
     );
 }
