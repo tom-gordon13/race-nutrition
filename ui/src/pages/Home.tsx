@@ -86,7 +86,6 @@ export const Home = () => {
                         <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} />
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
-                        {/* <NutritionInfoContainer totalNutrition={totalNutrition} /> */}
                         <Button onClick={toggleDrawer(true)} variant='contained'
                             sx={{
                                 height: '40%'
