@@ -12,3 +12,11 @@ export const nutrientMapping: Record<string, string> = {
     'Fatty acids, total trans': 'Trans fat',
     'Cholesterol': 'Cholesterol'
 }
+
+export const nutrientsToShow: string[] = [
+    'Protein',
+    'Fat',
+    'Carbohydrate',
+    'Fiber',
+    'Sodium'
+]

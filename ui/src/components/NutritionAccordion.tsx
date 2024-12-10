@@ -89,7 +89,7 @@ export const NutritionAccordion: React.FC<NutritionAccordionProps> = ({ isDraggi
                 </AccordionSummary>
                 <AccordionDetails
                     sx={{
-                        height: "300px",
+                        height: "160px",
                         maxHeight: "300px",
                         overflow: "auto",
                     }}>

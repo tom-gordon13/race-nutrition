@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SingleHourNutrition, useNutrition } from '../context/NutritionContext';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { nutrientMapping } from '../reference/nutrient-mapping'
+import { nutrientMapping, nutrientsToShow } from '../reference/nutrient-mapping'
 
 
 interface HourlyNutritionContainerProps {
@@ -22,16 +22,24 @@ export const HourlyNutritionContainer: React.FC<HourlyNutritionContainerProps> =
     return (
         <Box>
             {Object.keys(currHourNutrition).length > 0 ? (
-                Object.entries(currHourNutrition).map(([key, value]) => (
-                    <Box key={key} sx={{ marginBottom: '2px' }}>
-                        <Typography variant="body1" sx={{
-                            fontSize: '12px',
-                            marginBottom: 0
-                        }}>
-                            <strong>{nutrientMapping[key] || key}</strong>: {Number(value.volume).toFixed(1)} {value.unit}
-                        </Typography>
-                    </Box>
-                ))
+                Object.entries(currHourNutrition)
+                    .filter(([key]) => nutrientsToShow.includes(nutrientMapping[key]))
+                    .map(([key, value]) => (
+                        <Box key={key} sx={{ marginBottom: '2px' }}>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    fontSize: '12px',
+                                    marginBottom: 0,
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <strong>{nutrientMapping[key] || key}:</strong> {Number(value.volume).toFixed(1)} {value.unit}
+                            </Typography>
+                        </Box>
+                    ))
             ) : (
                 <Typography variant="body1">N/A</Typography>
             )}
