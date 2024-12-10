@@ -94,10 +94,6 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     };
 
-    useEffect(() => {
-        console.log('yurt', hourlyNutrition)
-    }, [hourlyNutrition])
-
     const removeFromHourlyNutrition = async (itemId: string, hour: number) => {
         if (!hourlyNutrition[hour]) {
             console.error(`Hour ${hour} does not exist in hourlyNutrition.`);

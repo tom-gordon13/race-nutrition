@@ -11,6 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import { useNutrition } from '../context/NutritionContext';
 import { useEventContext } from '../context/EventContext';
 import { floatToHours } from '../utils/float-to-time';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 interface RaceContainerTopProps {
@@ -39,6 +40,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
 
 
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const adjustCoordinates = (initialX: number, initialY: number, instance_id: number) => {
         const containerTop = containerRef?.current?.offsetTop ?? 0;
@@ -108,7 +110,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                         x: location.current.input.clientX - rect.left,
                         y: location.current.input.clientY - rect.top,
                     };
-                    console.log("Source:", source, "Bounding Rect:", rect, "Mouse Offset:", mouseOffset);
                     setMouseOffset(mouseOffset)
                 } else {
                     console.error("Source element is not available in onDragStart");
@@ -161,31 +162,59 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 position: 'relative',
                 padding: '1rem',
                 border: `1px solid ${theme.palette.grey[300]}`,
-                width: containerDimensions.width,
-                height: containerDimensions.height,
+                width: {
+                    sm: containerDimensions.width,
+                    xs: containerDimensions.height
+                },
+                height: {
+                    sm: containerDimensions.height,
+                    xs: containerDimensions.width,
+                },
                 marginTop: '1rem',
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: {
+                    xs: 'row',
+                    sm: 'column',
+                },
                 alignItems: 'center',
                 bgcolor: isDraggedOver ? 'skyblue' : theme.palette.grey[500],
                 borderRadius: 2,
                 boxShadow: 3,
             }}
         >
-            {[...Array(lineCount)].map((_, index) => (
-                (index !== 0 && index !== lineCount - 1) ?
-                    < Box
-                        key={index}
-                        sx={{
-                            position: 'absolute',
-                            top: 0,
-                            bottom: 0,
-                            left: `${(index * 100) / (lineCount - 1)}%`,
-                            width: '1px',
-                            bgcolor: 'white ',
-                        }}
-                    /> : null
-            ))}
+            {[...Array(lineCount)].map((_, index) => {
+                if (index === 0 || index === lineCount - 1) return null;
+
+                if (isMobile) {
+                    return (
+                        <Box
+                            key={index}
+                            sx={{
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                top: `${(index * 100) / (lineCount - 1)}%`,
+                                height: '1px',
+                                bgcolor: 'white',
+                            }}
+                        />
+                    );
+                } else {
+                    return (
+                        <Box
+                            key={index}
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                left: `${(index * 100) / (lineCount - 1)}%`,
+                                width: '1px',
+                                bgcolor: 'white',
+                            }}
+                        />
+                    );
+                }
+            })}
             {
                 allocatedItems.map((item) => (
                     <AllocatedFoodItem key={uuidv4()} item={item} />
