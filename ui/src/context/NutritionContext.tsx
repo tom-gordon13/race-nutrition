@@ -53,6 +53,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const removeItemFromHourly = (itemId: string, hour: number, quantity?: number) => {
         const fullyEventItemsCopy = [...fullEventItems]
+        console.log('yurt', fullEventItems)
         const indexToRemove = fullyEventItemsCopy[hour].indexOf(itemId);
         if (indexToRemove !== -1) {
             fullyEventItemsCopy.splice(indexToRemove, 1);
@@ -100,7 +101,6 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             console.log(hourlyNutrition);
             return;
         }
-
         try {
             const nutrients = await getNutrients(itemId);
             const hourlyNutritionObject = { ...hourlyNutrition[hour] };

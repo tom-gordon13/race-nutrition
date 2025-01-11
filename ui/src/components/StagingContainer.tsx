@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { StagedItem } from '../pages/Home';
@@ -9,11 +9,12 @@ interface StagingContainerProps {
     stagedItems: StagedItem[]
     removeStagedItem: Function
     setIsDraggingStagedItem: (isDraggingStagedItem: boolean) => void
+    toggleDrawer: (newOpen: boolean) => void
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem, setIsDraggingStagedItem }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem, setIsDraggingStagedItem, toggleDrawer }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
     const theme = useTheme()
 
@@ -31,15 +32,26 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
             gap: '1%',
             borderRadius: 2,
         }}>
-            {stagedItems.map((item) => (
-                <FoodItemCard
-                    key={item.item_id}
-                    item={item}
-                    onDropInRaceContainer={handleDropInRaceContainer}
-                    removeStagedItem={removeStagedItem}
-                    setIsDraggingStagedItem={setIsDraggingStagedItem}
-                />
-            ))}
+            <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
+                <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
+                    {stagedItems.map((item) => (
+                        <FoodItemCard
+                            key={item.item_id}
+                            item={item}
+                            onDropInRaceContainer={handleDropInRaceContainer}
+                            removeStagedItem={removeStagedItem}
+                            setIsDraggingStagedItem={setIsDraggingStagedItem}
+                        />
+                    ))}</Grid>
+                <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
+                    <Button onClick={() => toggleDrawer(true)} variant='contained' sx={{ height: '40%' }}>Search for Items</Button>
+
+                    <Button onClick={() => { console.log('clear items') }} variant='outlined' sx={{
+                        height: '25%'
+                    }}>Clear Items</Button>
+                </Grid>
+            </Grid>
+
 
         </Box>
     );

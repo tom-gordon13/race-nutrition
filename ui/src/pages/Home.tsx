@@ -38,7 +38,8 @@ export const Home = () => {
 
     const lineCount = raceDurationSample + 1;
 
-    const toggleDrawer = (newOpen: boolean) => () => {
+    const toggleDrawer = (newOpen: boolean) => {
+        console.log('open')
         setIsDrawerOpen(newOpen);
     };
 
@@ -71,7 +72,7 @@ export const Home = () => {
         <>
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
-                <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)} anchor='right' PaperProps={{
+                <Drawer open={isDrawerOpen} onClose={() => toggleDrawer(false)} anchor='right' PaperProps={{
                     sx: {
                         width: "50vw",
                         maxWidth: "50vw",
@@ -83,18 +84,18 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
                     <Grid item xs={9}>
-                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} />
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
-                        <Button onClick={toggleDrawer(true)} variant='contained'
-                            sx={{
-                                height: '40%'
-                            }}>Search for Items
-                        </Button>
+                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} toggleDrawer={toggleDrawer} />
+                        {/* <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
+                            <Button onClick={toggleDrawer(true)} variant='contained'
+                                sx={{
+                                    height: '40%'
+                                }}>Search for Items
+                            </Button>
 
-                        <Button onClick={() => { console.log('clear items') }} variant='outlined' sx={{
-                            height: '25%'
-                        }}>Clear Items</Button>
+                            <Button onClick={() => { console.log('clear items') }} variant='outlined' sx={{
+                                height: '25%'
+                            }}>Clear Items</Button>
+                        </Grid> */}
                     </Grid>
                 </Grid>
                 <NutritionAccordion isDraggingStagedItem={isDraggingStagedItem} />
