@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material/styles';
 
 interface StagingContainerProps {
     stagedItems: StagedItem[]
+    setStagedItems: Function
     removeStagedItem: Function
     setIsDraggingStagedItem: (isDraggingStagedItem: boolean) => void
     toggleDrawer: (newOpen: boolean) => void
@@ -14,7 +15,7 @@ interface StagingContainerProps {
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, removeStagedItem, setIsDraggingStagedItem, toggleDrawer }) => {
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, setStagedItems, removeStagedItem, setIsDraggingStagedItem, toggleDrawer }) => {
     const { handleDropInRaceContainer } = useAllocatedItems();
     const theme = useTheme()
 
@@ -46,7 +47,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
                 <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
                     <Button onClick={() => toggleDrawer(true)} variant='contained' sx={{ height: '40%' }}>Search for Items</Button>
 
-                    <Button onClick={() => { console.log('clear items') }} variant='outlined' sx={{
+                    <Button onClick={() => setStagedItems([])} variant='outlined' sx={{
                         height: '25%'
                     }}>Clear Items</Button>
                 </Grid>

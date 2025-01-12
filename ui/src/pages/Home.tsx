@@ -84,7 +84,7 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
                     <Grid item xs={9}>
-                        <StagingContainer stagedItems={stagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} toggleDrawer={toggleDrawer} />
+                        <StagingContainer stagedItems={stagedItems} setStagedItems={setStagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} toggleDrawer={toggleDrawer} />
                         {/* <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
                             <Button onClick={toggleDrawer(true)} variant='contained'
                                 sx={{
