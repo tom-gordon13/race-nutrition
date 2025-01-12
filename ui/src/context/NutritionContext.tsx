@@ -10,6 +10,7 @@ interface NutritionContextProps {
     removeFromHourlyNutrition: (itemId: string, hour: number, quantity?: number) => void
     removeItemFromHourly: (itemId: string, hour: number, quantity?: number) => void
     addItemToHourly: (itemId: string, hour: number, servings: number) => void
+    updateNutritionByHour: (assignedHour: number) => void
 }
 
 interface NutritionValue {
@@ -62,15 +63,15 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 
         const fullEventItemsByVolumeCopy = [...fullEventItemsByVolume]
-        if (!(itemId in fullEventItemsByVolumeCopy[hour - 1])) {
-            fullEventItemsByVolumeCopy[hour - 1][itemId] = {
+        if (!(itemId in fullEventItemsByVolumeCopy[hour])) {
+            fullEventItemsByVolumeCopy[hour][itemId] = {
                 itemName: 'no item names yet',
                 servings: 1
             }
         } else {
-            fullEventItemsByVolumeCopy[hour - 1][itemId] = {
+            fullEventItemsByVolumeCopy[hour][itemId] = {
                 itemName: 'no item names yet',
-                servings: fullEventItemsByVolumeCopy[hour - 1][itemId].servings += 1
+                servings: fullEventItemsByVolumeCopy[hour][itemId].servings += 1
             }
         }
 
@@ -87,6 +88,32 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         setFullEventItems([...fullyEventItemsCopy])
     }
+
+    const updateNutritionByHour = async (assignedHour: number) => {
+        const hourlyNutrients: any = {};
+
+        const hourFoodItems = fullEventItemsByVolume[assignedHour];
+
+        for (const [key, pair] of Object.entries(hourFoodItems)) {
+            const nutrients = await getNutrients(key);
+            const servings = pair.servings;
+
+            nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
+                const { nutrientName, value, unitName } = nutrient;
+
+                if (nutrientName in hourlyNutrients) {
+                    hourlyNutrients[nutrientName].volume += value * servings;
+                } else {
+                    hourlyNutrients[nutrientName] = { volume: value * servings };
+                }
+            });
+        }
+
+        setHourlyNutrition((prevHourlyNutrition) => ({
+            ...prevHourlyNutrition,
+            [assignedHour + 1]: hourlyNutrients,
+        }));
+    };
 
     const calculateHourlyNutrition = async (itemId: string, assignedHour: number,) => {
         const nutrients = await getNutrients(itemId);
@@ -150,7 +177,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 
     return (
-        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition, addItemToHourly, removeItemFromHourly }}>
+        <NutritionContext.Provider value={{ calculateHourlyNutrition, hourlyNutrition, removeFromHourlyNutrition, addItemToHourly, removeItemFromHourly, updateNutritionByHour }}>
             {children}
         </NutritionContext.Provider>
     );
