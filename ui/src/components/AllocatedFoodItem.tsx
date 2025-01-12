@@ -41,7 +41,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const [position, setPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
-    const { calculateHourlyNutrition } = useNutrition()
     const { eventDuration } = useEventContext()
 
     const theme = useTheme();
@@ -50,9 +49,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
     const containerWidth = raceContainerRect.width
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
-    useEffect(() => {
-        // calculateHourlyNutrition(item.item_id, floatToHours(position.x / containerWidth * eventDuration) + 1)
-    }, [position])
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         const horizontalOverlap = rect1.right <= rect2.left || rect1.left >= rect2.right
