@@ -9,7 +9,7 @@ interface NutritionContextProps {
     hourlyNutrition: HourlyNutrition
     removeFromHourlyNutrition: (itemId: string, hour: number, quantity?: number) => void
     removeItemFromHourly: (itemId: string, hour: number, quantity?: number) => void
-    addItemToHourly: (itemId: string, hour: number, quantity?: number) => void
+    addItemToHourly: (itemId: string, hour: number, servings: number) => void
 }
 
 interface NutritionValue {
@@ -27,6 +27,13 @@ interface HourlyNutrition {
 
 type HourlyItems = string[];
 
+interface HourlyItemsByVolume {
+    [itemId: string]: {
+        itemName: string,
+        servings: number
+    }
+}
+
 
 const NutritionContext = createContext<NutritionContextProps | undefined>(undefined);
 
@@ -34,6 +41,9 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const [hourlyNutrition, setHourlyNutrition] = useState<HourlyNutrition>({})
     const { eventDuration } = useEventContext()
     const [fullEventItems, setFullEventItems] = useState<HourlyItems[]>([])
+    const [fullEventItemsByVolume, setFullEventItemsByVolume] = useState<HourlyItemsByVolume[]>(
+        Array.from({ length: eventDuration }, () => ({}))
+    );
     const { allocatedItems } = useAllocatedItems()
 
     useEffect(() => {
@@ -44,16 +54,31 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, [eventDuration]);
 
 
-    const addItemToHourly = (itemId: string, hour: number) => {
+    const addItemToHourly = async (itemId: string, hour: number, servings: number = 1) => {
         const fullyEventItemsCopy = [...fullEventItems]
         fullyEventItemsCopy[hour - 1] = fullyEventItemsCopy[hour - 1] ? [...fullyEventItemsCopy[hour - 1], itemId] : []
 
         setFullEventItems([...fullyEventItemsCopy])
+
+
+        const fullEventItemsByVolumeCopy = [...fullEventItemsByVolume]
+        if (!(itemId in fullEventItemsByVolumeCopy[hour - 1])) {
+            fullEventItemsByVolumeCopy[hour - 1][itemId] = {
+                itemName: 'no item names yet',
+                servings: 1
+            }
+        } else {
+            fullEventItemsByVolumeCopy[hour - 1][itemId] = {
+                itemName: 'no item names yet',
+                servings: fullEventItemsByVolumeCopy[hour - 1][itemId].servings += 1
+            }
+        }
+
+        setFullEventItemsByVolume([...fullEventItemsByVolumeCopy])
     }
 
     const removeItemFromHourly = (itemId: string, hour: number, quantity?: number) => {
         const fullyEventItemsCopy = [...fullEventItems]
-        console.log('yurt', fullEventItems)
         const indexToRemove = fullyEventItemsCopy[hour].indexOf(itemId);
         if (indexToRemove !== -1) {
             fullyEventItemsCopy.splice(indexToRemove, 1);
@@ -63,7 +88,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setFullEventItems([...fullyEventItemsCopy])
     }
 
-    const calculateHourlyNutrition = async (itemId: string, assignedHour: number) => {
+    const calculateHourlyNutrition = async (itemId: string, assignedHour: number,) => {
         const nutrients = await getNutrients(itemId);
 
         setHourlyNutrition((prevHourlyNutrition) => {
@@ -83,7 +108,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 } else {
                     hourlyNutritionObject[nutrientName] = {
                         volume: value,
-                        unit: unitName,
+                        unit: unitName
                     };
                 }
             });

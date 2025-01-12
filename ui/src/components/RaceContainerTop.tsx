@@ -128,7 +128,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 const isValidDrop = checkValidDrop(adjustedCoordinates.x, adjustedCoordinates.y)
                 if (isValidDrop) {
                     invariant(containerRef?.current);
-                    addItemToHourly(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1)
+                    addItemToHourly(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1, 1)
                     calculateHourlyNutrition(itemData.item_id, floatToHours(adjustedCoordinates.x / containerRef.current.clientWidth * eventDuration) + 1)
                     const isUpdate = !!itemData.instance_id
                     const newInstanceId = allocatedItems.length + 1

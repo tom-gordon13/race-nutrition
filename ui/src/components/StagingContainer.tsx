@@ -32,7 +32,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
             gap: '1%',
             borderRadius: 2,
         }}>
-            <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
+            <Grid container spacing={2} alignItems="flex-start" justifyContent='space-between' sx={{ margin: '1rem 10rem' }}>
                 <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
                     {stagedItems.map((item) => (
                         <FoodItemCard
