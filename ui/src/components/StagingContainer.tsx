@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Grid } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
@@ -11,12 +11,14 @@ interface StagingContainerProps {
     removeStagedItem: Function
     setIsDraggingStagedItem: (isDraggingStagedItem: boolean) => void
     toggleDrawer: (newOpen: boolean) => void
+    isCustomItemDialogOpen: boolean
+    setIsCustomItemDialogOpen: Function
 }
 
 
 
-export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, setStagedItems, removeStagedItem, setIsDraggingStagedItem, toggleDrawer }) => {
-    const { handleDropInRaceContainer } = useAllocatedItems();
+export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems, setStagedItems, removeStagedItem, setIsDraggingStagedItem, toggleDrawer, isCustomItemDialogOpen, setIsCustomItemDialogOpen }) => {
+    const { handleDropInRaceContainer } = useAllocatedItems()
     const theme = useTheme()
 
     return (
@@ -46,6 +48,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
                     ))}</Grid>
                 <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
                     <Button onClick={() => toggleDrawer(true)} variant='contained' sx={{ height: '40%' }}>Search for Items</Button>
+                    <Button onClick={() => setIsCustomItemDialogOpen(true)} variant='contained' sx={{ height: '40%' }}>Add Custom item</Button>
 
                     <Button onClick={() => setStagedItems([])} variant='outlined' sx={{
                         height: '25%'

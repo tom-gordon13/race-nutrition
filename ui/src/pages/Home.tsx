@@ -11,6 +11,7 @@ import { postNutrients } from '../services/post-nutrient-to-redis';
 import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
 import { HourlyNutritionContainer } from '../components/HourlyNutritionContainer';
 import { NutritionAccordion } from '../components/NutritionAccordion';
+import { CustomItemDialog } from '../components/CustomItemDialog';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const raceDurationSample = 10
@@ -35,6 +36,7 @@ export const Home = () => {
     const [totalNutrition, setTotalNutrition] = useState<Record<string, { totalValue: number; unitName: string; }>>({})
     const [isDraggingStagedItem, setIsDraggingStagedItem] = useState<boolean>(false)
     const [searchResults, setSearchResults] = useState<object[]>([])
+    const [isCustomItemDialogOpen, setIsCustomItemDialogOpen] = useState<boolean>(false)
 
     const lineCount = raceDurationSample + 1;
 
@@ -69,6 +71,7 @@ export const Home = () => {
 
     return (
         <>
+            <CustomItemDialog isCustomItemDialogOpen={isCustomItemDialogOpen} onClose={() => setIsCustomItemDialogOpen(false)} />
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
                 <Drawer open={isDrawerOpen} onClose={() => toggleDrawer(false)} anchor='right' PaperProps={{
@@ -83,7 +86,7 @@ export const Home = () => {
 
                 <Grid container spacing={2} alignItems="flex-start" justifyContent='center' sx={{ margin: '1rem 10rem' }}>
                     <Grid item xs={9}>
-                        <StagingContainer stagedItems={stagedItems} setStagedItems={setStagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} toggleDrawer={toggleDrawer} />
+                        <StagingContainer stagedItems={stagedItems} setStagedItems={setStagedItems} removeStagedItem={removeStagedItem} setIsDraggingStagedItem={setIsDraggingStagedItem} toggleDrawer={toggleDrawer} isCustomItemDialogOpen={isCustomItemDialogOpen} setIsCustomItemDialogOpen={setIsCustomItemDialogOpen} />
                     </Grid>
                 </Grid>
                 <NutritionAccordion isDraggingStagedItem={isDraggingStagedItem} />
