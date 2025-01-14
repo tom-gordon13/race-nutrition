@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid } from "@mui/material";
+import { nutrientsToShow } from '../reference/nutrient-mapping'
 
 interface CustomItemDialogProps {
     isCustomItemDialogOpen: boolean;
@@ -7,8 +8,22 @@ interface CustomItemDialogProps {
     // onSubmit: (customItemName: string) => void; 
 }
 
+// Custom item Fields
+// itemName (required)
+// itemBrand (optional)
+// itemCategory (optional)
+// nutrientsToShow nutrients
+
+
 export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItemDialogOpen, onClose }) => {
     const [customItemName, setCustomItemName] = useState<string>("");
+    const [formData, setFormData] = useState<Record<string, string>>({
+        Protein: "",
+        Fat: "",
+        Carbohydrate: "",
+        Fiber: "",
+        Sodium: "",
+    });
 
     const handleSubmit = () => {
         if (customItemName.trim()) {
@@ -17,20 +32,31 @@ export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItem
             onClose();
         }
     };
-    console.log('isCustom', isCustomItemDialogOpen)
+
+    const handleChange = (field: string, value: string) => {
+        if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+            setFormData((prev) => ({ ...prev, [field]: value }));
+        }
+    };
 
     return (
-        <Dialog open={isCustomItemDialogOpen} onClose={onClose}>
+        <Dialog open={isCustomItemDialogOpen} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>Create Custom Item</DialogTitle>
             <DialogContent>
-                <TextField
-                    fullWidth
-                    label="Custom Item Name"
-                    variant="outlined"
-                    value={customItemName}
-                    onChange={(e) => setCustomItemName(e.target.value)}
-                    autoFocus
-                />
+                <Grid container spacing={2}>
+                    {nutrientsToShow.map((field) => (
+                        <Grid item xs={12} sm={6} key={field}>
+                            <TextField
+                                fullWidth
+                                label={field}
+                                variant="outlined"
+                                value={formData[field]}
+                                onChange={(e) => handleChange(field, e.target.value)}
+                                inputProps={{ inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="secondary">
