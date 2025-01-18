@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { CustomItemForm } from "./CustomItemForm";
-import { customItemFormFields } from "../../reference/forms/custom-item-form";
+import { customItemFormFields, fieldValidation } from "../../reference/forms/custom-item-form";
 
 interface CustomItemDialogProps {
     isCustomItemDialogOpen: boolean;
     onClose: () => void;
     addCustomToStagedItems: Function;
 }
-
-const numericFieldPattern = /^[0-9]*\.?[0-9]*$/;
-
-const fieldValidation: Record<string, (value: string) => boolean> = {
-    numericField: (value) => numericFieldPattern.test(value),
-    textField: () => true,
-};
 
 export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItemDialogOpen, onClose, addCustomToStagedItems }) => {
     const initialFormData = Object.keys(customItemFormFields).reduce((acc, key) => {
