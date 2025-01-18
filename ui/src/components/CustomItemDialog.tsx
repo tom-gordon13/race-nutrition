@@ -6,7 +6,7 @@ import { customItemFormFields } from '../reference/forms/custom-item-form'
 interface CustomItemDialogProps {
     isCustomItemDialogOpen: boolean;
     onClose: () => void;
-    // onSubmit: (customItemName: string) => void; 
+    addCustomToStagedItems: Function
 }
 
 const itemMetaFields: string[] = [
@@ -22,26 +22,14 @@ const fieldValidation: Record<string, (value: string) => boolean> = {
     textField: () => true,
 };
 
-// Custom item Fields
-// itemName (required)
-// itemBrand (optional)
-// itemCategory (optional)
-// nutrientsToShow nutrients
 
+export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItemDialogOpen, onClose, addCustomToStagedItems }) => {
+    const initialFormData = Object.keys(customItemFormFields).reduce((acc, key) => {
+        acc[key] = "";
+        return acc;
+    }, {} as Record<string, string>);
 
-export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItemDialogOpen, onClose }) => {
-    const [customItemName, setCustomItemName] = useState<string>("");
-    const [formFields, setFormFields] = useState<string[]>([...itemMetaFields, ...nutrientsToShow])
-    const [formData, setFormData] = useState<Record<string, string>>({
-        'Item Name': "",
-        'Item Brand': "",
-        'Item Category': "",
-        Protein: "",
-        Fat: "",
-        Carbohydrate: "",
-        Fiber: "",
-        Sodium: "",
-    });
+    const [formData, setFormData] = useState<Record<string, string>>(initialFormData);
 
     const metaDataFields = Object.entries(customItemFormFields).filter(
         ([_, fieldData]) => fieldData.formCategory === 'metaData'
@@ -52,11 +40,9 @@ export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItem
     );
 
     const handleSubmit = () => {
-        if (customItemName.trim()) {
-            // onSubmit(customItemName); 
-            setCustomItemName("");
-            onClose();
-        }
+        addCustomToStagedItems(formData)
+
+        onClose()
     };
 
     const handleChange = (field: string, value: string) => {
@@ -81,6 +67,7 @@ export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItem
                                     variant="outlined"
                                     value={formData[field]}
                                     helperText={fieldData.helpText}
+                                    required={fieldData.required ?? false}
                                     onChange={(e) => handleChange(field, e.target.value)}
                                     slotProps={{
                                         input: {
@@ -104,6 +91,7 @@ export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItem
                                     variant="outlined"
                                     value={formData[field]}
                                     helperText={fieldData.helpText}
+                                    required={fieldData.required ?? false}
                                     onChange={(e) => {
                                         if (
                                             fieldData.validationType === 'numericField' &&

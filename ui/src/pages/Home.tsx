@@ -28,6 +28,11 @@ export interface searchedItem {
     brandName?: string
 }
 
+export interface customItem {
+    itemName: string
+    itemBrand?: string
+}
+
 export const Home = () => {
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const theme = useTheme()
@@ -64,6 +69,17 @@ export const Home = () => {
         setStagedItems([...stagedItems, newItem])
     }
 
+    const addCustomToStagedItems = (item: customItem) => {
+        const newItem = {
+            item_id: '123',
+            item_name: item.itemName,
+            item_brand: item.itemBrand || ''
+        }
+        // postNutrients(item)
+
+        setStagedItems([...stagedItems, newItem])
+    }
+
     const removeStagedItem = (item: StagedItem) => {
         const newStageditems = stagedItems.filter((stagedItem) => item.item_id !== stagedItem.item_id)
         setStagedItems([...newStageditems])
@@ -71,7 +87,7 @@ export const Home = () => {
 
     return (
         <>
-            <CustomItemDialog isCustomItemDialogOpen={isCustomItemDialogOpen} onClose={() => setIsCustomItemDialogOpen(false)} />
+            <CustomItemDialog isCustomItemDialogOpen={isCustomItemDialogOpen} onClose={() => setIsCustomItemDialogOpen(false)} addCustomToStagedItems={addCustomToStagedItems} />
             <NavMain />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
                 <Drawer open={isDrawerOpen} onClose={() => toggleDrawer(false)} anchor='right' PaperProps={{

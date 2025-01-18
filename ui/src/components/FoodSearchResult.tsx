@@ -1,8 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { dropTargetForElements, monitorForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import invariant from 'tiny-invariant';
+import React, { useState } from 'react';
 import { Box, Button, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
