@@ -1,12 +1,26 @@
 import React, { useState } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid } from "@mui/material";
-import { nutrientsToShow } from '../reference/nutrient-mapping'
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, Typography } from "@mui/material";
+import { nutrientsToShow } from '../reference/object-mapping/nutrient-mapping'
+import { customItemFormFields } from '../reference/forms/custom-item-form'
 
 interface CustomItemDialogProps {
     isCustomItemDialogOpen: boolean;
     onClose: () => void;
     // onSubmit: (customItemName: string) => void; 
 }
+
+const itemMetaFields: string[] = [
+    'Item Name',
+    'Item Brand',
+    'Item Category'
+]
+
+const numericFieldPattern = /^[0-9]*\.?[0-9]*$/
+
+const fieldValidation: Record<string, (value: string) => boolean> = {
+    numericField: (value) => numericFieldPattern.test(value),
+    textField: () => true,
+};
 
 // Custom item Fields
 // itemName (required)
@@ -17,13 +31,25 @@ interface CustomItemDialogProps {
 
 export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItemDialogOpen, onClose }) => {
     const [customItemName, setCustomItemName] = useState<string>("");
+    const [formFields, setFormFields] = useState<string[]>([...itemMetaFields, ...nutrientsToShow])
     const [formData, setFormData] = useState<Record<string, string>>({
+        'Item Name': "",
+        'Item Brand': "",
+        'Item Category': "",
         Protein: "",
         Fat: "",
         Carbohydrate: "",
         Fiber: "",
         Sodium: "",
     });
+
+    const metaDataFields = Object.entries(customItemFormFields).filter(
+        ([_, fieldData]) => fieldData.formCategory === 'metaData'
+    );
+
+    const nutrientFields = Object.entries(customItemFormFields).filter(
+        ([_, fieldData]) => fieldData.formCategory === 'nutrients'
+    );
 
     const handleSubmit = () => {
         if (customItemName.trim()) {
@@ -34,28 +60,69 @@ export const CustomItemDialog: React.FC<CustomItemDialogProps> = ({ isCustomItem
     };
 
     const handleChange = (field: string, value: string) => {
-        if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+        const isValid = fieldValidation[field] ? fieldValidation[field](value) : true;
+
+        if (isValid) {
             setFormData((prev) => ({ ...prev, [field]: value }));
         }
     };
 
     return (
-        <Dialog open={isCustomItemDialogOpen} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Create Custom Item</DialogTitle>
-            <DialogContent>
-                <Grid container spacing={2}>
-                    {nutrientsToShow.map((field) => (
-                        <Grid item xs={12} sm={6} key={field}>
-                            <TextField
-                                fullWidth
-                                label={field}
-                                variant="outlined"
-                                value={formData[field]}
-                                onChange={(e) => handleChange(field, e.target.value)}
-                                inputProps={{ inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }}
-                            />
-                        </Grid>
-                    ))}
+        <Dialog open={isCustomItemDialogOpen} onClose={onClose} maxWidth="sm" fullWidth >
+            <DialogTitle sx={{ marginBottom: 0 }}>Create Custom Item</DialogTitle>
+            <DialogContent sx={{ padding: '4rem', paddingTop: '3rem !important' }}>
+                <Grid container spacing={4}>
+                    <Grid container spacing={2}>
+                        {metaDataFields.map(([field, fieldData]) => (
+                            <Grid item xs={12} sm={6} key={field}>
+                                <TextField
+                                    fullWidth
+                                    label={fieldData.publicName}
+                                    variant="outlined"
+                                    value={formData[field]}
+                                    helperText={fieldData.helpText}
+                                    onChange={(e) => handleChange(field, e.target.value)}
+                                    slotProps={{
+                                        input: {
+                                            inputMode: fieldData.validationType === 'textField' ? 'text' : 'decimal',
+                                        },
+                                    }}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Typography variant="h6">Nutrients</Typography>
+                    </Grid>
+                    <Grid container spacing={2}>
+                        {nutrientFields.map(([field, fieldData]) => (
+                            <Grid item xs={12} sm={6} key={field}>
+                                <TextField
+                                    fullWidth
+                                    label={fieldData.publicName}
+                                    variant="outlined"
+                                    value={formData[field]}
+                                    helperText={fieldData.helpText}
+                                    onChange={(e) => {
+                                        if (
+                                            fieldData.validationType === 'numericField' &&
+                                            (e.target.value === '' || /^[0-9]*\.?[0-9]*$/.test(e.target.value))
+                                        ) {
+                                            handleChange(field, e.target.value);
+                                        } else if (fieldData.validationType === 'textField') {
+                                            handleChange(field, e.target.value);
+                                        }
+                                    }}
+                                    slotProps={{
+                                        input: {
+                                            inputMode: fieldData.validationType === 'numericField' ? 'decimal' : 'text',
+                                        },
+                                    }}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>

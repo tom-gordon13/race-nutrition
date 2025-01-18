@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SingleHourNutrition, useNutrition } from '../context/NutritionContext';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { nutrientMapping, nutrientsToShow } from '../reference/nutrient-mapping'
+import { nutrientMapping, nutrientsToShow } from '../reference/object-mapping/nutrient-mapping'
 
 
 interface HourlyNutritionContainerProps {
