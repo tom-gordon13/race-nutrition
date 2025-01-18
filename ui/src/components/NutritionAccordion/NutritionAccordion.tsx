@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
-import { useEventContext } from '../context/EventContext';
+import { useEventContext } from '../../context/EventContext';
 import { HourlyNutritionContainer } from './HourlyNutritionContainer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';

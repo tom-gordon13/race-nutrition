@@ -5,7 +5,7 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from 'tiny-invariant';
 import { Box, Button, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { getNutrients } from '../services/get-nutrients-from-redis';
+import { getNutrients } from '../../services/get-nutrients-from-redis';
 
 
 interface FoodItemCardProps {

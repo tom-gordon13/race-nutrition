@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Drawer, Button, Accordion, AccordionSummary, Typography, AccordionDetails } from '@mui/material';
-import { StagingContainer } from '../components/StagingContainer';
+import { StagingContainer } from '../components/StagingContainer/StagingContainer';
 import { RaceContainerTop } from '../components/RaceContainerTop'
 import { NavMain } from '../components/NavMain';
 import { useTheme } from '@mui/material/styles';
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { FoodSearchContainer } from '../components/FoodSearchContainer';
+import { FoodSearchContainer } from '../components/FoodSearch/FoodSearchContainer';
 import { postNutrients } from '../services/post-nutrient-to-redis';
 import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
-import { HourlyNutritionContainer } from '../components/HourlyNutritionContainer';
-import { NutritionAccordion } from '../components/NutritionAccordion';
-import { CustomItemDialog } from '../components/CustomItemDialog';
+import { HourlyNutritionContainer } from '../components/NutritionAccordion/HourlyNutritionContainer';
+import { NutritionAccordion } from '../components/NutritionAccordion/NutritionAccordion';
+import { CustomItemDialog } from '../components/CustomItem/CustomItemDialog';
 // import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const raceDurationSample = 10

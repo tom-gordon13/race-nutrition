@@ -1,17 +1,3 @@
-const itemMetaFields: string[] = [
-    'Item Name',
-    'Item Brand',
-    'Item Category'
-]
-
-export const nutrientsToShow: string[] = [
-    'Protein',
-    'Fat',
-    'Carbohydrate',
-    'Fiber',
-    'Sodium'
-]
-
 const numericFieldPattern = /^[0-9]*\.?[0-9]*$/
 
 const fieldValidation: Record<string, (value: string) => boolean> = {

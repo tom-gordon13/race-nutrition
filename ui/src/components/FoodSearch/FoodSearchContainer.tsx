@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FoodSearchResult } from './FoodSearchResult';
 import { Box, Button, Grid, Input, CircularProgress } from '@mui/material';
-import { fetchItem } from '../services/get-item';
+import { fetchItem } from '../../services/get-item';
 
 interface FoodSearchContainerProps {
     addToStagedItems: Function

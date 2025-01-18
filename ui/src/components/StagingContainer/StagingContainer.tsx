@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid } from '@mui/material';
 import { FoodItemCard } from './FoodItemCard';
-import { useAllocatedItems } from '../context/AllocatedItemsContext';
-import { StagedItem } from '../pages/Home';
+import { useAllocatedItems } from '../../context/AllocatedItemsContext';
+import { StagedItem } from '../../pages/Home';
 import { useTheme } from '@mui/material/styles';
 
 interface StagingContainerProps {
