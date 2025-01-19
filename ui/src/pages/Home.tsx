@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import { NutritionInfoContainer } from '../components/NutritionInfoContainer'
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { FoodSearchContainer } from '../components/FoodSearch/FoodSearchContainer';
-import { postNutrients } from '../services/post-nutrient-to-redis';
+import { generateUUID, postNutrients, postCustomNutrients } from '../services/post-nutrient-to-redis';
 import { calculateTotalNutrition } from '../services/calculate-total-nutrition'
 import { HourlyNutritionContainer } from '../components/NutritionAccordion/HourlyNutritionContainer';
 import { NutritionAccordion } from '../components/NutritionAccordion/NutritionAccordion';
@@ -70,12 +70,14 @@ export const Home = () => {
     }
 
     const addCustomToStagedItems = (item: customItem) => {
+        const item_id = generateUUID()
         const newItem = {
-            item_id: '123',
+            item_id,
             item_name: item.itemName,
             item_brand: item.itemBrand || ''
         }
-        // postNutrients(item)
+
+        postCustomNutrients({ ...item, item_id })
 
         setStagedItems([...stagedItems, newItem])
     }
