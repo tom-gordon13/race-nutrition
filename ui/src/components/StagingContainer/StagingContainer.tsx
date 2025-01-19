@@ -47,7 +47,7 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
                         />
                     ))}</Grid>
                 <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
-                    <Button onClick={() => toggleDrawer(true)} variant='contained' sx={{ height: '40%' }}>Search for Items</Button>
+                    <Button onClick={() => toggleDrawer(true)} variant='contained' color="success" sx={{ height: '40%' }}>Search for Items</Button>
                     <Button onClick={() => setIsCustomItemDialogOpen(true)} variant='contained' sx={{ height: '40%' }}>Add Custom item</Button>
 
                     <Button onClick={() => setStagedItems([])} variant='outlined' sx={{
