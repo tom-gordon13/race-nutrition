@@ -177,9 +177,9 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
         if (previousLine) {
             console.log(`Item came from hour ${previousLine! + 1} and moved into hour ${currentLine! + 1}`)
 
-            // addItemToHourly(item.item_id, floatToHours(currentLine! + 1), 1)
-            // updateNutritionByHour(hour)
-            // removeItemFromHourly(item.item_id, floatToHours(previousLine! + 1))
+            addItemToHourly(item.item_id, currentLine!, 1)
+            updateNutritionByHour(currentLine!)
+            removeItemFromHourly(item.item_id, floatToHours(previousLine! + 1))
         }
     };
     return (
