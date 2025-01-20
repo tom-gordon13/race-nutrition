@@ -18,7 +18,6 @@ export const HourlyNutritionContainer: React.FC<HourlyNutritionContainerProps> =
         setCurrHourNutrition(hourlyNutrition[hourNumber] || {});
     }, [hourlyNutrition, hourNumber, allocatedItems]);
 
-    console.log(currHourNutrition)
     return (
         <Box>
             {Object.keys(currHourNutrition).length > 0 ? (

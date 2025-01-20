@@ -6,6 +6,7 @@ import invariant from 'tiny-invariant';
 import { Box, Button, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { getNutrients } from '../../services/get-nutrients-from-redis';
+import { NUTRIENT_REFERENCE } from '../../reference/object-mapping/nutrient-mapping';
 
 
 interface FoodItemCardProps {
@@ -16,7 +17,7 @@ interface FoodItemCardProps {
 }
 
 const containerDimensions = {
-    height: '100px',
+    height: '80px',
     width: '120px',
 }
 
@@ -94,7 +95,7 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ item, onDropInRaceCo
 
     const tooltipContent = itemNutrients
         ? Object.entries(itemNutrients)
-            .map(([key, value]) => `${key}: ${value}`)
+            .map(([key, value]) => `${NUTRIENT_REFERENCE[key].APP_NAME}: ${value}`)
             .join("\n")
         : loading
             ? "Loading..."

@@ -22,41 +22,95 @@ export const StagingContainer: React.FC<StagingContainerProps> = ({ stagedItems,
     const theme = useTheme()
 
     return (
-        <Box sx={{
-            height: '15rem',
-            width: '100%',
-            border: `2px solid ${theme.palette.grey[300]}`,
-            alignContent: 'center',
-            marginBottom: '1rem',
-            padding: '1rem',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'start',
-            gap: '1%',
-            borderRadius: 2,
-        }}>
-            <Grid container spacing={2} alignItems="flex-start" justifyContent='space-between' sx={{ margin: '1rem 10rem' }}>
-                <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
-                    {stagedItems.map((item) => (
+        <Box
+            sx={{
+                height: '15rem',
+                width: '100%',
+                border: `2px solid ${theme.palette.grey[300]}`,
+                alignContent: 'center',
+                marginBottom: '1rem',
+                padding: '1rem',
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '1%',
+                borderRadius: 2,
+            }}
+        >
+            <Box
+                sx={{
+                    flex: '1',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-around',
+                    gap: '10%',
+                    padding: '1%'
+                }}
+            >
+                <Button
+                    onClick={() => toggleDrawer(true)}
+                    variant="contained"
+                    color="success"
+                    sx={{ height: '40%' }}
+                >
+                    Search for Items
+                </Button>
+                <Button
+                    onClick={() => setIsCustomItemDialogOpen(true)}
+                    variant="contained"
+                    sx={{ height: '40%' }}
+                >
+                    Add Custom Item
+                </Button>
+                <Button
+                    onClick={() => setStagedItems([])}
+                    variant="outlined"
+                    color="error"
+                    sx={{ height: '25%' }}
+                >
+                    Clear Items
+                </Button>
+            </Box>
+
+            <Box
+                sx={{
+                    flex: '3',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                    gap: '15px',
+                    overflow: 'hidden',
+                    height: '100%',
+                    paddingTop: '50px',
+                    paddingLeft: '20px',
+                    bgcolor: "rgba(211, 211, 211, 0.5)"
+                }}
+            >
+                {stagedItems.map((item) => (
+                    <Box
+                        key={item.item_id}
+                        sx={{
+                            flex: '0 1 calc(100% / 6 - 10px)',
+                            maxWidth: 'calc(100% / 6 - 10px)',
+                            height: 'calc(100% / 4 - 50px)',
+                            maxHeight: 'calc(100% / 4 - 50px)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            boxSizing: 'border-box',
+                        }}
+                    >
                         <FoodItemCard
-                            key={item.item_id}
                             item={item}
                             onDropInRaceContainer={handleDropInRaceContainer}
                             removeStagedItem={removeStagedItem}
                             setIsDraggingStagedItem={setIsDraggingStagedItem}
                         />
-                    ))}</Grid>
-                <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10%', height: '200px' }}>
-                    <Button onClick={() => toggleDrawer(true)} variant='contained' color="success" sx={{ height: '40%' }}>Search for Items</Button>
-                    <Button onClick={() => setIsCustomItemDialogOpen(true)} variant='contained' sx={{ height: '40%' }}>Add Custom item</Button>
-
-                    <Button onClick={() => setStagedItems([])} variant='outlined' sx={{
-                        height: '25%'
-                    }}>Clear Items</Button>
-                </Grid>
-            </Grid>
-
+                    </Box>
+                ))}
+            </Box>
 
         </Box>
+
     );
 }

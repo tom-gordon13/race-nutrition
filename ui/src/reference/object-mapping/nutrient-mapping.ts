@@ -13,7 +13,7 @@ export const NUTRIENT_REFERENCE: NutrientReference = {
         UNITS: 'G'
     },
     FAT: {
-        APP_NAME: 'FAT',
+        APP_NAME: 'Fat',
         FDC_NAME: 'Total lipid (fat)',
         UNITS: 'G'
     },
@@ -35,7 +35,7 @@ export const NUTRIENT_REFERENCE: NutrientReference = {
     CALCIUM: {
         APP_NAME: 'Calcium',
         FDC_NAME: 'Calcium, Ca',
-        UNITS: 'G'
+        UNITS: 'MG'
     },
     IRON: {
         APP_NAME: 'Iron',
@@ -50,12 +50,12 @@ export const NUTRIENT_REFERENCE: NutrientReference = {
     VITAMIN_A: {
         APP_NAME: 'Vitamin A',
         FDC_NAME: 'Vitamin A, IU',
-        UNITS: 'G'
+        UNITS: 'IU'
     },
     VITAMIN_C: {
         APP_NAME: 'Vitamin C',
         FDC_NAME: 'Vitamin C, total ascorbic acid',
-        UNITS: 'G'
+        UNITS: 'MG'
     },
     TRANS_FAT: {
         APP_NAME: 'Trans Fat',
@@ -65,7 +65,7 @@ export const NUTRIENT_REFERENCE: NutrientReference = {
     CHOLESTEROL: {
         APP_NAME: 'Cholesterol',
         FDC_NAME: 'Cholesterol',
-        UNITS: 'G'
+        UNITS: 'MG'
     }
 }
 
