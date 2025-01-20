@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { CustomItemForm } from "./CustomItemForm";
 import { customItemFormFields, fieldValidation } from "../../reference/forms/custom-item-form";
-import { postCustomFoodItem } from "../../services/post-custom-food-item";
-import { postCustomNutrients } from "../../services/post-nutrient-to-redis";
 
 interface CustomItemDialogProps {
     isCustomItemDialogOpen: boolean;
