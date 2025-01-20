@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SingleHourNutrition, useNutrition } from '../../context/NutritionContext';
 import { useAllocatedItems } from '../../context/AllocatedItemsContext';
-import { nutrientMapping, nutrientsToShow } from '../../reference/object-mapping/nutrient-mapping'
+import { nutrientMapping, nutrientsToShow, NUTRIENT_REFERENCE } from '../../reference/object-mapping/nutrient-mapping'
 
 
 interface HourlyNutritionContainerProps {
@@ -18,12 +18,12 @@ export const HourlyNutritionContainer: React.FC<HourlyNutritionContainerProps> =
         setCurrHourNutrition(hourlyNutrition[hourNumber] || {});
     }, [hourlyNutrition, hourNumber, allocatedItems]);
 
-
+    console.log(currHourNutrition)
     return (
         <Box>
             {Object.keys(currHourNutrition).length > 0 ? (
                 Object.entries(currHourNutrition)
-                    .filter(([key]) => nutrientsToShow.includes(nutrientMapping[key]))
+                    .filter(([key]) => nutrientsToShow.includes(key))
                     .map(([key, value]) => (
                         <Box key={key} sx={{ marginBottom: '2px' }}>
                             <Typography
@@ -36,7 +36,7 @@ export const HourlyNutritionContainer: React.FC<HourlyNutritionContainerProps> =
                                     alignItems: 'center'
                                 }}
                             >
-                                <strong>{nutrientMapping[key] || key}:</strong> {Number(value.volume).toFixed(1)} {value.unit}
+                                <strong>{NUTRIENT_REFERENCE[key].APP_NAME || key}:</strong> {Number(value.volume).toFixed(1)} {NUTRIENT_REFERENCE[key].UNITS}
                             </Typography>
                         </Box>
                     ))

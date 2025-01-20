@@ -1,4 +1,5 @@
 import axios from "axios";
+import { NUTRIENT_REFERENCE } from "../reference/object-mapping/nutrient-mapping";
 
 const API_PORT = 3001;
 
@@ -12,7 +13,13 @@ export const generateUUID = () => {
     });
 }
 
-export const postNutrients = async (item: any) => {
+const findNutrientByFdcNameWithKey = (fdcName: string) => {
+    return Object.entries(NUTRIENT_REFERENCE).find(
+        ([_, nutrient]) => nutrient.FDC_NAME === fdcName
+    );
+}
+
+export const postFDCNutrients = async (item: any) => {
     const { fdcId, foodNutrients, brandName, brandOwner, description, servingSize } = item;
 
     if (!servingSize || servingSize <= 0) {
@@ -20,10 +27,20 @@ export const postNutrients = async (item: any) => {
         return;
     }
 
-    const scaledFoodNutrients = foodNutrients.map((nutrient: any) => ({
-        ...nutrient,
-        value: nutrient.value * (servingSize / 100),
-    }));
+    const scaledFoodNutrients: any[] = [];
+
+    foodNutrients.forEach((nutrient: any) => {
+        const nutrientRefObject = findNutrientByFdcNameWithKey(nutrient.nutrientName)
+        if (nutrientRefObject) {
+            const [key] = nutrientRefObject
+            const nutrientData = {
+                ...nutrient,
+                nutrientName: key,
+                value: nutrient.value * (servingSize / 100),
+            };
+            scaledFoodNutrients.push(nutrientData);
+        }
+    });
 
     const itemToPost = {
         fdcId,

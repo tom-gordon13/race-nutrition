@@ -101,7 +101,7 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const servings = pair.servings;
 
             nutrients.forEach((nutrient: { nutrientName: string; value: number; unitName: string }) => {
-                const { nutrientName, value, unitName } = nutrient;
+                const { nutrientName, value } = nutrient;
 
                 if (nutrientName in hourlyNutrients) {
                     hourlyNutrients[nutrientName].volume += value * servings;

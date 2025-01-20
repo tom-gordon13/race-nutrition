@@ -1,4 +1,12 @@
-export const NUTRIENT_REFERENCE = {
+type NutrientReference = {
+    [key: string]: {
+        APP_NAME: string;
+        FDC_NAME: string;
+        UNITS: string;
+    };
+};
+
+export const NUTRIENT_REFERENCE: NutrientReference = {
     PROTEIN: {
         APP_NAME: 'Protein',
         FDC_NAME: 'Protein',
@@ -58,9 +66,7 @@ export const NUTRIENT_REFERENCE = {
         APP_NAME: 'Cholesterol',
         FDC_NAME: 'Cholesterol',
         UNITS: 'G'
-    },
-
-
+    }
 }
 
 export const nutrientMapping: Record<string, string> = {
@@ -79,9 +85,9 @@ export const nutrientMapping: Record<string, string> = {
 }
 
 export const nutrientsToShow: string[] = [
-    'Protein',
-    'Fat',
-    'Carbohydrate',
-    'Fiber',
-    'Sodium'
+    'PROTEIN',
+    'FAT',
+    'CARBOHYDRATE',
+    'FIBER',
+    'SODIUM'
 ]
