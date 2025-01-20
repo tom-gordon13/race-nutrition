@@ -20,9 +20,10 @@ const findNutrientByFdcNameWithKey = (fdcName: string) => {
 }
 
 export const postFDCNutrients = async (item: any) => {
-    const { fdcId, foodNutrients, brandName, brandOwner, description, servingSize } = item;
+    const { fdcId, foodNutrients, brandName, brandOwner, description } = item;
+    const servings = 1
 
-    if (!servingSize || servingSize <= 0) {
+    if (!servings || servings <= 0) {
         console.error("Invalid serving size");
         return;
     }
@@ -36,7 +37,7 @@ export const postFDCNutrients = async (item: any) => {
             const nutrientData = {
                 ...nutrient,
                 nutrientName: key,
-                value: nutrient.value * (servingSize / 100),
+                value: nutrient.value * (servings / 100),
             };
             scaledFoodNutrients.push(nutrientData);
         }

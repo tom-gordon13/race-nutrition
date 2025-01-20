@@ -13,7 +13,9 @@ import { floatToHours, floatToHoursAndMinutes, getOneMinuteStepSize } from '../u
 
 
 interface FoodItemContainerProps {
-    item: AllocatedItem,
+    item: AllocatedItem;
+    linePositions: number[];
+    onLineCross: (item: AllocatedItem, previousLine: number | null, currentLine: number | null) => void;
 }
 
 const margin = 5
@@ -35,13 +37,14 @@ const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
     toJSON: rect.toJSON
 });
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) => {
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, linePositions, onLineCross }) => {
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const [position, setPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
     const { eventDuration } = useEventContext()
+    const previousLine = useRef<number | null>(null);
 
     const theme = useTheme();
     const raceContainer = document.querySelector('#race-container') as HTMLElement;
@@ -66,7 +69,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             return;
         }
 
-        // const raceContainerRect = raceContainer.getBoundingClientRect();
         const currentRect = allocatedItemElement.getBoundingClientRect();
 
         const relativeY = currentRect.y - raceContainerRect.y;
@@ -191,6 +193,16 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item }) =>
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [isInEditMode]);
+
+    useEffect(() => {
+        const currentLine = linePositions.findIndex((line) => position.x < line);
+
+        if (currentLine !== previousLine.current) {
+            onLineCross(item, previousLine.current, currentLine);
+
+            previousLine.current = currentLine;
+        }
+    }, [position.x, linePositions, onLineCross, item]);
 
 
     return (

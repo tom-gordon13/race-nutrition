@@ -55,10 +55,10 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 
     const addItemToHourly = async (itemId: string, hour: number, servings: number = 1) => {
-        const fullyEventItemsCopy = [...fullEventItems]
-        fullyEventItemsCopy[hour - 1] = fullyEventItemsCopy[hour - 1] ? [...fullyEventItemsCopy[hour - 1], itemId] : []
+        const fullEventItemsCopy = [...fullEventItems]
+        fullEventItemsCopy[hour - 1] = fullEventItemsCopy[hour - 1] ? [...fullEventItemsCopy[hour - 1], itemId] : []
 
-        setFullEventItems([...fullyEventItemsCopy])
+        setFullEventItems([...fullEventItemsCopy])
 
 
         const fullEventItemsByVolumeCopy = [...fullEventItemsByVolume]

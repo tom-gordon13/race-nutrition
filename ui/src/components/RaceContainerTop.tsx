@@ -12,6 +12,7 @@ import { useNutrition } from '../context/NutritionContext';
 import { useEventContext } from '../context/EventContext';
 import { floatToHours } from '../utils/float-to-time';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { calculateTotalNutrition } from '../services/calculate-total-nutrition';
 
 
 interface RaceContainerTopProps {
@@ -101,7 +102,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 invariant(containerRef?.current);
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined, x: number } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined, x: number }
                 removeItemFromHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
-                // addItemToHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {
@@ -144,12 +144,44 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const handleDragLeave = (e: any) => {
         if (e.relatedTarget === null || !e.currentTarget.contains(e.relatedTarget)) {
             setIsDraggedOver(false);
-            console.log('leave');
         }
     };
 
     const lineCount = raceDuration + 1;
 
+    const getLinePositions = () => {
+        if (!containerRef.current) return [];
+        const containerWidth = containerRef.current.offsetWidth;
+        return Array.from({ length: lineCount - 2 }, (_, index) => {
+            return (index + 1) * (containerWidth / (lineCount - 1));
+        });
+    };
+
+    const linePositions = getLinePositions();
+
+    const handleLineCross = (item: AllocatedItem, previousLine: number | null, currentLine: number | null) => {
+        if (previousLine === currentLine) {
+            return;
+        }
+
+        const direction = previousLine !== null && currentLine !== null
+            ? (currentLine > previousLine ? "right" : "left")
+            : null;
+
+        if (currentLine !== null && linePositions[currentLine] === item.x) {
+            if (direction === "right") {
+                return;
+            }
+        }
+
+        if (previousLine) {
+            console.log(`Item came from hour ${previousLine! + 1} and moved into hour ${currentLine! + 1}`)
+
+            // addItemToHourly(item.item_id, floatToHours(currentLine! + 1), 1)
+            // updateNutritionByHour(hour)
+            // removeItemFromHourly(item.item_id, floatToHours(previousLine! + 1))
+        }
+    };
     return (
         <Box
             id="race-container"
@@ -215,7 +247,8 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
             })}
             {
                 allocatedItems.map((item) => (
-                    <AllocatedFoodItem key={uuidv4()} item={item} />
+                    <AllocatedFoodItem key={uuidv4()} item={item} linePositions={linePositions}
+                        onLineCross={handleLineCross} />
                 ))
             }
         </Box >
