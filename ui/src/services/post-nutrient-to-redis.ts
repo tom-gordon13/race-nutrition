@@ -80,11 +80,11 @@ const generateNutrients = (nutrients: Object) => {
 export const postCustomNutrients = async (item: any) => {
     const { protein, fat, carbohydrate, fiber, sodium, itemName, itemBrand, itemCategory, item_id } = item
     const nutrients = {
-        'Protein': protein,
-        'Total lipid (fat)': fat,
-        'Carbohydrate, by difference': carbohydrate,
-        'Fiber, total dietary': fiber,
-        'Sodium, Na': sodium
+        'PROTEIN': protein,
+        'FAT': fat,
+        'CARBOHYDRATE': carbohydrate,
+        'FIBER': fiber,
+        'SODIUM': sodium
     }
 
     const foodNutrients = generateNutrients(nutrients)

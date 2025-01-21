@@ -40,6 +40,7 @@ const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
 export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, linePositions, onLineCross }) => {
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
+    const isInEditModeRef = useRef<boolean>(false);
     const [position, setPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
@@ -115,7 +116,8 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     };
 
     const handleClick = () => {
-        setIsInEditMode(!isInEditMode);
+        isInEditModeRef.current = !isInEditModeRef.current;
+        setIsInEditMode(isInEditModeRef.current);
     };
 
     useEffect(() => {
@@ -161,38 +163,38 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     }, []);
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (!isInEditMode) return;
+        if (!isInEditModeRef.current) return;
 
-        if (e.key === 'ArrowRight') {
-            // resolveOverlapOnDrop()
-            setPosition((prev) => ({
-                ...prev,
-                x: Math.min(containerWidth - margin, prev.x + stepSize),
-            }));
-        }
-        if (e.key === 'ArrowLeft') {
-            // resolveOverlapOnDrop(true)
-            setPosition((prev) => ({
-                ...prev,
-                x: Math.max(margin, prev.x - stepSize),
-            }));
-        }
-        if (e.key === 'Enter') {
-            if (isInEditMode) setIsInEditMode(false)
-        }
+        setPosition((prev) => {
+            let newX = prev.x;
+
+            if (e.key === 'ArrowRight') {
+                newX = Math.min(containerWidth - margin, prev.x + stepSize);
+            } else if (e.key === 'ArrowLeft') {
+                newX = Math.max(margin, prev.x - stepSize);
+            }
+
+            setAllocatedItems((prevItems) =>
+                prevItems.map((allocatedItem) =>
+                    allocatedItem.instance_id === item.instance_id
+                        ? { ...allocatedItem, x: newX }
+                        : allocatedItem
+                )
+            );
+
+            return { ...prev, x: newX };
+        });
     };
 
+
     useEffect(() => {
-        if (isInEditMode) {
-            window.addEventListener('keydown', handleKeyDown);
-        } else {
-            window.removeEventListener('keydown', handleKeyDown);
-        }
+        const handleKeyPress = (e: KeyboardEvent) => handleKeyDown(e);
+        window.addEventListener('keydown', handleKeyPress);
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keydown', handleKeyPress);
         };
-    }, [isInEditMode]);
+    }, []);
 
     useEffect(() => {
         const currentLine = linePositions.findIndex((line) => position.x < line);
@@ -203,6 +205,10 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
             previousLine.current = currentLine;
         }
     }, [position.x, linePositions, onLineCross, item]);
+
+    useEffect(() => {
+        console.log(allocatedItems)
+    }, [allocatedItems])
 
 
     return (
@@ -244,7 +250,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
                     variant="contained"
                     color="secondary"
                     sx={{
-                        minWidth: '20px', // Make the button small
+                        minWidth: '20px',
                         height: '20px',
                         padding: 0,
                         fontSize: '12px',
