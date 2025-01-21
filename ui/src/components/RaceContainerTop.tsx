@@ -176,6 +176,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
 
         if (previousLine) {
             //// BUG HERE - NEED TO UPDATE ALLOCATED ITEMS ON ARROW KEY MOVE OTHERWISE THIS GETS RESET
+            /// NEED TO PERSIST IS_IN_EDIT_MODE ACROSS RE RENDERS
             console.log(`Item came from hour ${previousLine! + 1} and moved into hour ${currentLine! + 1}`)
 
             addItemToHourly(item.item_id, currentLine!, 1)

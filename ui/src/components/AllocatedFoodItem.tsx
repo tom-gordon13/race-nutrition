@@ -45,6 +45,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     const [isDragging, setIsDragging] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
     const { eventDuration } = useEventContext()
+    const { removeItemFromHourly } = useNutrition()
     const previousLine = useRef<number | null>(null);
 
     const theme = useTheme();
@@ -259,7 +260,10 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
                         textAlign: 'center',
                         fontWeight: 'bold',
                     }}
-                    onClick={() => removeAllocatedItem(item.instance_id)}
+                    onClick={() => {
+                        removeAllocatedItem(item.instance_id)
+                        removeItemFromHourly(item.item_id, floatToHours((position.x / containerWidth) * eventDuration + 1))
+                    }}
                 >
                     X
                 </Button>
