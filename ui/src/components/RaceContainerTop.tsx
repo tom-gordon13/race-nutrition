@@ -38,6 +38,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
     const { allocatedItems, setAllocatedItems } = useAllocatedItems();
     const { addItemToHourly, removeItemFromHourly, updateNutritionByHour } = useNutrition()
     const { eventDuration } = useEventContext()
+    // const [itemsInEditMode, setItemsInEditMode] = useState<number[]>([])
 
 
     const theme = useTheme();
@@ -173,7 +174,6 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 return;
             }
         }
-
         if (previousLine) {
             //// BUG HERE - NEED TO UPDATE ALLOCATED ITEMS ON ARROW KEY MOVE OTHERWISE THIS GETS RESET
             /// NEED TO PERSIST IS_IN_EDIT_MODE ACROSS RE RENDERS

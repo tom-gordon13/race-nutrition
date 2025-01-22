@@ -200,16 +200,13 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     useEffect(() => {
         const currentLine = linePositions.findIndex((line) => position.x < line);
 
+        console.log(previousLine, currentLine)
         if (currentLine !== previousLine.current) {
             onLineCross(item, previousLine.current, currentLine);
 
             previousLine.current = currentLine;
         }
-    }, [position.x, linePositions, onLineCross, item]);
-
-    useEffect(() => {
-        console.log(allocatedItems)
-    }, [allocatedItems])
+    }, [position.x, linePositions, onLineCross, item.x]);
 
 
     return (
