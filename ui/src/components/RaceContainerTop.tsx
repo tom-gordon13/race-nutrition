@@ -102,7 +102,7 @@ export const RaceContainerTop: React.FC<RaceContainerTopProps> = ({ raceDuration
                 setIsDraggedOver(true)
                 invariant(containerRef?.current);
                 const itemData: { item_id: string, item_name: string, instance_id: number | undefined, x: number } = source.data.item as { item_id: string; item_name: string, instance_id: number | undefined, x: number }
-                removeItemFromHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration) + 1)
+                removeItemFromHourly(itemData.item_id, floatToHours(itemData.x / containerRef.current.clientWidth * eventDuration))
                 if (source.element) {
                     const rect = source.element.getBoundingClientRect();
                     const mouseOffset = {

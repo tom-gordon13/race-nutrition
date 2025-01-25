@@ -55,6 +55,29 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     const containerWidth = raceContainerRect.width
     const stepSize = getOneMinuteStepSize(containerWidth, eventDuration)
 
+    const adjustCoordinatesKeyboard = (initialX: number, initialY: number, instance_id: number) => {
+
+        let x = initialX
+        let y = 3;
+
+        let overlapping = true;
+        while (overlapping) {
+            overlapping = false;
+
+            for (const allocatedItem of allocatedItems) {
+                if (allocatedItem.instance_id === instance_id) continue;
+                const isHorizontalOverlap =
+                    Math.abs(allocatedItem.x - x) < parseInt(containerDimensions.width);
+                const isVerticalOverlap =
+                    Math.abs(allocatedItem.y - y) < parseInt(containerDimensions.height);
+                if (isHorizontalOverlap && isVerticalOverlap) {
+                    y += parseInt(containerDimensions.height) + 3;
+                }
+            }
+        }
+
+        return { x: x, y: y };
+    };
 
     const checkOverlap = (rect1: DOMRect, rect2: DOMRect) => {
         const horizontalOverlap = rect1.right <= rect2.left || rect1.left >= rect2.right
@@ -123,10 +146,13 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
             setEditModePreviousHour(currentLine)
         } else {
             try {
+                const adjustedCoordinates = adjustCoordinatesKeyboard(position.x, position.y, item.instance_id as number)
+                setPosition(() => ({ x: adjustedCoordinates.x, y: adjustedCoordinates.y }));
+
                 setAllocatedItems((prevItems) =>
                     prevItems.map((allocatedItem) =>
                         allocatedItem.instance_id === item.instance_id
-                            ? { ...allocatedItem, x: position.x }
+                            ? { ...allocatedItem, x: adjustedCoordinates.x, y: adjustedCoordinates.y }
                             : allocatedItem
                     )
                 );
@@ -210,18 +236,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, []);
-
-    // useEffect(() => {
-    //     const currentLine = linePositions.findIndex((line) => position.x < line);
-
-    //     console.log(previousLine, currentLine)
-    //     if (currentLine !== previousLine.current) {
-    //         onLineCross(item, previousLine.current, currentLine);
-
-    //         previousLine.current = currentLine;
-    //     }
-    // }, [position.x, linePositions, onLineCross, item.x]);
-
 
     return (
         <Box
