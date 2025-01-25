@@ -41,11 +41,12 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const isInEditModeRef = useRef<boolean>(false);
+    const [editModePreviousHour, setEditModePreviousHour] = useState<number | null>(null)
     const [position, setPosition] = useState({ x: item.x, y: item.y });
     const [isDragging, setIsDragging] = useState(false);
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
+    const { addItemToHourly, removeItemFromHourly, updateNutritionByHour } = useNutrition()
     const { eventDuration } = useEventContext()
-    const { removeItemFromHourly } = useNutrition()
     const previousLine = useRef<number | null>(null);
 
     const theme = useTheme();
@@ -117,6 +118,27 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     };
 
     const handleClick = () => {
+        const currentLine = linePositions.findIndex((line) => position.x < line);
+        if (!isInEditModeRef.current) {
+            setEditModePreviousHour(currentLine)
+        } else {
+            try {
+                setAllocatedItems((prevItems) =>
+                    prevItems.map((allocatedItem) =>
+                        allocatedItem.instance_id === item.instance_id
+                            ? { ...allocatedItem, x: position.x }
+                            : allocatedItem
+                    )
+                );
+                addItemToHourly(item.item_id, currentLine!, 1)
+                updateNutritionByHour(currentLine!)
+                removeItemFromHourly(item.item_id, editModePreviousHour || currentLine)
+            } catch {
+                console.log('There was an error')
+            }
+
+        }
+
         isInEditModeRef.current = !isInEditModeRef.current;
         setIsInEditMode(isInEditModeRef.current);
     };
@@ -175,14 +197,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
                 newX = Math.max(margin, prev.x - stepSize);
             }
 
-            setAllocatedItems((prevItems) =>
-                prevItems.map((allocatedItem) =>
-                    allocatedItem.instance_id === item.instance_id
-                        ? { ...allocatedItem, x: newX }
-                        : allocatedItem
-                )
-            );
-
             return { ...prev, x: newX };
         });
     };
@@ -197,16 +211,16 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
         };
     }, []);
 
-    useEffect(() => {
-        const currentLine = linePositions.findIndex((line) => position.x < line);
+    // useEffect(() => {
+    //     const currentLine = linePositions.findIndex((line) => position.x < line);
 
-        console.log(previousLine, currentLine)
-        if (currentLine !== previousLine.current) {
-            onLineCross(item, previousLine.current, currentLine);
+    //     console.log(previousLine, currentLine)
+    //     if (currentLine !== previousLine.current) {
+    //         onLineCross(item, previousLine.current, currentLine);
 
-            previousLine.current = currentLine;
-        }
-    }, [position.x, linePositions, onLineCross, item.x]);
+    //         previousLine.current = currentLine;
+    //     }
+    // }, [position.x, linePositions, onLineCross, item.x]);
 
 
     return (

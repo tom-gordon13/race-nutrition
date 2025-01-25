@@ -86,9 +86,9 @@ export const NutritionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const removeItemFromHourly = (itemId: string, hour: number, servings: number = 1) => {
         const fullEventItemsByVolumeCopy = fullEventItemsByVolume
-        fullEventItemsByVolumeCopy[hour - 1][itemId].servings -= servings
+        fullEventItemsByVolumeCopy[hour][itemId].servings -= servings
         setFullEventItemsByVolume([...fullEventItemsByVolumeCopy])
-        setPendingHourUpdate(hour - 1);
+        setPendingHourUpdate(hour);
     }
 
     const updateNutritionByHour = async (assignedHour: number) => {
