@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import { AllocatedItem } from '../interfaces/AllocatedItem';
 import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { useNutrition } from '../context/NutritionContext';
@@ -10,6 +10,8 @@ import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clos
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { useTheme } from '@mui/material/styles';
 import { floatToHours, floatToHoursAndMinutes, getOneMinuteStepSize } from '../utils/float-to-time'
+import { getNutrients } from '../services/get-nutrients-from-redis';
+import { NUTRIENT_REFERENCE } from '../reference/object-mapping/nutrient-mapping';
 
 
 interface FoodItemContainerProps {
@@ -41,6 +43,8 @@ const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
 export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, linePositions, anyItemInEditMode, setAnyItemInEditMode }) => {
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
+    const [itemNutrients, setItemNutrients] = useState<any>(null)
+    const [loading, setLoading] = useState<boolean>(false);
     const isInEditModeRef = useRef<boolean>(false);
     const [editModePreviousHour, setEditModePreviousHour] = useState<number | null>(null)
     const [position, setPosition] = useState({ x: item.x, y: item.y });
@@ -194,11 +198,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
                 onDrop: () => {
                     resolveOverlapOnDrop()
                 },
-                onDragEnter: (args) => {
-                    // if (args.source.data.cardId !== item.itemId) {
-                    //     console.log("onDragEnter", args);
-                    // }
-                },
+                onDragEnter: () => { },
             }),
             draggable({
                 element: allocatedItemElement,
@@ -238,65 +238,101 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
         };
     }, []);
 
+    const handleTooltipOpen = async () => {
+        if (itemNutrients === null) {
+            setLoading(true);
+            try {
+                const nutrients = await getNutrients(item.item_id);
+                const formattedNutrients = nutrients.reduce(
+                    (acc: Record<string, string | number>, nutrient: { nutrientName: string; value: number; unitName: string }) => {
+                        const roundedValue = Math.round(nutrient.value * 10) / 10;
+                        acc[nutrient.nutrientName] = `${roundedValue} ${nutrient.unitName}`;
+                        return acc;
+                    },
+                    {}
+                );
+                setItemNutrients(formattedNutrients);
+            } catch (error) {
+                console.error("Failed to fetch nutrients:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    const tooltipContent = itemNutrients
+        ? Object.entries(itemNutrients)
+            .map(([key, value]) => `${NUTRIENT_REFERENCE[key].APP_NAME}: ${value}`)
+            .join("\n")
+        : loading
+            ? "Loading..."
+            : "Hover to load nutrients";
+
     return (
-        <Box
-            ref={allocatedItemRef}
-            sx={{
-                position: 'absolute',
-                top: position.y,
-                left: position.x,
-                height: containerDimensions.height,
-                width: containerDimensions.width,
-                padding: '0.5rem',
-                bgcolor: !isInEditMode ? theme.palette.primary.main : theme.palette.secondary.main,
-                '&:hover': {
-                    bgcolor: !isInEditMode ? theme.palette.primary.light : theme.palette.secondary.light,
-                    width: '200px'
-                },
-                cursor: isDragging ? 'grabbing' : 'grab',
-                borderRadius: 2,
-                boxShadow: 3,
-                color: 'white',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                overflow: 'hidden',
-                transition: 'width 0.3s ease',
-            }}
-            onDoubleClick={handleClick}
-            data-item-id={item.instance_id}
+        <Tooltip
+            title={<span style={{ whiteSpace: "pre-line" }}>{tooltipContent}</span>}
+            arrow
+            onOpen={handleTooltipOpen}
         >
             <Box
+                ref={allocatedItemRef}
                 sx={{
                     position: 'absolute',
-                    top: '4px',
-                    right: '4px',
-                    display: isInEditMode ? 'block' : 'none',
+                    top: position.y,
+                    left: position.x,
+                    height: containerDimensions.height,
+                    width: containerDimensions.width,
+                    padding: '0.5rem',
+                    bgcolor: !isInEditMode ? theme.palette.primary.main : theme.palette.secondary.main,
+                    '&:hover': {
+                        bgcolor: !isInEditMode ? theme.palette.primary.light : theme.palette.secondary.light,
+                        width: '200px'
+                    },
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    color: 'white',
+                    fontSize: '10px',
+                    fontWeight: 'bold',
+                    overflow: 'hidden',
+                    transition: 'width 0.3s ease',
                 }}
+                onDoubleClick={handleClick}
+                data-item-id={item.instance_id}
             >
-                <Button
-                    variant="contained"
-                    color="secondary"
+                <Box
                     sx={{
-                        minWidth: '20px',
-                        height: '20px',
-                        padding: 0,
-                        fontSize: '12px',
-                        lineHeight: 1,
-                        borderRadius: '50%',
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                    }}
-                    onClick={() => {
-                        removeAllocatedItem(item.instance_id)
-                        removeItemFromHourly(item.item_id, floatToHours((position.x / containerWidth) * eventDuration + 1))
+                        position: 'absolute',
+                        top: '4px',
+                        right: '4px',
+                        display: isInEditMode ? 'block' : 'none',
                     }}
                 >
-                    X
-                </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={{
+                            minWidth: '20px',
+                            height: '20px',
+                            padding: 0,
+                            fontSize: '12px',
+                            lineHeight: 1,
+                            borderRadius: '50%',
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                        }}
+                        onClick={() => {
+                            removeAllocatedItem(item.instance_id)
+                            removeItemFromHourly(item.item_id, floatToHours((position.x / containerWidth) * eventDuration + 1))
+                        }}
+                    >
+                        X
+                    </Button>
+                </Box>
+                {floatToHoursAndMinutes((position.x / containerWidth) * eventDuration)}
+                <br />
+                {item.item_name}
             </Box>
-            {floatToHoursAndMinutes((position.x / containerWidth) * eventDuration)}
-            <br />
-            {item.item_name}
-        </Box>
+        </Tooltip>
     );
 }

@@ -6,7 +6,6 @@ import { useAllocatedItems } from '../context/AllocatedItemsContext';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import invariant from 'tiny-invariant';
-import { v4 as uuidv4 } from 'uuid';
 import { useTheme } from '@mui/material/styles';
 import { useNutrition } from '../context/NutritionContext';
 import { useEventContext } from '../context/EventContext';
