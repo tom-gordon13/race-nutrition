@@ -15,7 +15,8 @@ import { floatToHours, floatToHoursAndMinutes, getOneMinuteStepSize } from '../u
 interface FoodItemContainerProps {
     item: AllocatedItem;
     linePositions: number[];
-    onLineCross: (item: AllocatedItem, previousLine: number | null, currentLine: number | null) => void;
+    anyItemInEditMode: boolean;
+    setAnyItemInEditMode: (itemInEditMode: boolean) => void
 }
 
 const margin = 5
@@ -37,7 +38,7 @@ const simulateRect = (rect: DOMRect, newTop: number): DOMRect => ({
     toJSON: rect.toJSON
 });
 
-export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, linePositions, onLineCross }) => {
+export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, linePositions, anyItemInEditMode, setAnyItemInEditMode }) => {
     const allocatedItemRef = useRef<HTMLDivElement | null>(null);
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
     const isInEditModeRef = useRef<boolean>(false);
@@ -47,7 +48,6 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     const { allocatedItems, setAllocatedItems, removeAllocatedItem } = useAllocatedItems();
     const { addItemToHourly, removeItemFromHourly, updateNutritionByHour } = useNutrition()
     const { eventDuration } = useEventContext()
-    const previousLine = useRef<number | null>(null);
 
     const theme = useTheme();
     const raceContainer = document.querySelector('#race-container') as HTMLElement;
@@ -143,6 +143,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
     const handleClick = () => {
         const currentLine = linePositions.findIndex((line) => position.x < line);
         if (!isInEditModeRef.current) {
+            if (anyItemInEditMode) return
             setEditModePreviousHour(currentLine)
         } else {
             try {
@@ -164,7 +165,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
             }
 
         }
-
+        setAnyItemInEditMode(!anyItemInEditMode)
         isInEditModeRef.current = !isInEditModeRef.current;
         setIsInEditMode(isInEditModeRef.current);
     };
@@ -267,7 +268,7 @@ export const AllocatedFoodItem: React.FC<FoodItemContainerProps> = ({ item, line
             <Box
                 sx={{
                     position: 'absolute',
-                    top: '4px', // Adjust to align with the box edges
+                    top: '4px',
                     right: '4px',
                     display: isInEditMode ? 'block' : 'none',
                 }}
